@@ -10,7 +10,7 @@
 //{
 //	GAME_TITLE_STATE,
 //	GAME_MENU_STATE,
-//	GAME_PLAY_STATE,
+//	,
 //	GAME_OVER_STATE
 //};
 //
@@ -800,7 +800,7 @@
 //	switch (mGameState)
 //	{
 //		case GAME_TITLE_STATE:
-//			RenderSprite(mTitleScreen, activeSpriteTech, true);
+//			RenderSprite(m, activeSpriteTech, true);
 //		break;
 //		case GAME_MENU_STATE:
 //			RenderSprite(mTeamMenuScreen, activeSpriteTech, true);

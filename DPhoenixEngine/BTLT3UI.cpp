@@ -193,7 +193,7 @@
 //	void BTLTUIDemo::HandleEvents(DPhoenix::IEvent* e);
 //
 //	//new method / initialises sounds to be used in the app
-//	void InitAudio();
+//	void();
 //
 //	//new method / specifically handles individual sprite rendering
 //	void RenderSprite(DPhoenix::Sprite* sprite,

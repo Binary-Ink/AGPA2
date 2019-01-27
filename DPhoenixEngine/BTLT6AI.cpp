@@ -914,7 +914,14 @@ bool BTLTAIDemo::Init(bool fullScreen)
 
 #pragma endregion BTLTInit
 
-	mAudioMgr.GetSound("Titlescreen")->Play(1); 
+#pragma region AudioInit
+
+		mAudioMgr.GetSound("Titlescreen")->Play(1);
+		mAudioMgr.GetSound("Gameplay")->Play(1);
+		mAudioMgr.GetSound("Menu")->Play(1);
+
+
+#pragma endregion AudioInit
 
 #pragma region BTLTShaderInit 
 
@@ -5124,21 +5131,29 @@ void BTLTAIDemo::HandleEvents(DPhoenix::IEvent* e)
 				{
 					mGameState = GAME_MENU_SELECT_XML_STATE;
 
+					//stop the audio
 					mAudioMgr.GetSound("Titlescreen")->Stop();
 					mAudioMgr.GetSound("Titlescreen")->SetPosition(0);
 
 				}
 				else if (mGameState == GAME_MENU_STATE)
 				{
+					
+					//play sound
+					mAudioMgr.GetSound("Menu")->Play(1);
+
 					if (mMenuState == CHOOSE_MENUSTATE &&
 						mPlayerTeam->mTeamMembers.size() == 4)
 					{
-						mMenuState = CONFIRM_MENUSTATE;
+						mMenuState = CONFIRM_MENUSTATE;					
 						mWaitTimer.Reset();
 					}
 				}
 				else if (mGameState == GAME_PLAY_STATE)
 				{
+					
+
+
 					if (mCurrentTeam == DPhoenix::PLAYER_TEAM &&
 						mPlayerTeam->mTeamMembers[mPlayerTeam->mCurrentMember]->mMoveState == DPhoenix::CH_PICKRT_MOVESTATE)
 					{
@@ -5226,6 +5241,11 @@ void BTLTAIDemo::HandleEvents(DPhoenix::IEvent* e)
 			CheckMouseHoverCreateXMLMenu();
 			break;
 		case GAME_PLAY_STATE:
+			//change sounds
+			mAudioMgr.GetSound("Menu")->Stop();
+			mAudioMgr.GetSound("Menu")->SetPosition(0);
+			//play sound
+			mAudioMgr.GetSound("Gameplay")->Play(1);
 			if (mCurrentTeam == DPhoenix::PLAYER_TEAM)
 			{
 				CheckMouseHoverTurns();
@@ -5304,7 +5324,15 @@ void BTLTAIDemo::HandleEvents(DPhoenix::IEvent* e)
 
 void BTLTAIDemo::InitAudio()
 {
+
+	//state music
 	mAudioMgr.CreateSound("Titlescreen", "Audio\\Music\\Theme.wav");
+	mAudioMgr.CreateSound("Menu", "Audio\\Music\\Menu.wav");
+	mAudioMgr.CreateSound("Gameplay", "Audio\\Music\\Game.wav");
+
+	//FX
+	mAudioMgr.CreateSound("Gameplay", "Audio\\FX\\Footsteps.wav");
+
 }
 
 void BTLTAIDemo::RenderSprite(DPhoenix::Sprite * sprite, ID3DX11EffectTechnique * tech, bool isHUD)
