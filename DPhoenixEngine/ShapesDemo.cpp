@@ -136,7 +136,7 @@
 //
 //	//debug font
 //	//(Arial size 20 sending window, initial brush, writefactory)
-//	mDebugFont = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Arial", 20.0f);
+//	mDebugFont = (mhMainWnd, mBlackBrush, mDWriteFactory, "Arial", 20.0f);
 //
 //	return true;
 //}

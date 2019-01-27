@@ -542,8 +542,8 @@ bool BTLTAIDemo::Init(bool fullScreen)
 	mCamEAngle.r = 0.0f; mCamEAngle.p = 0.0f; mCamEAngle.y = 0.0f;
 
 	//debug font
-	//(Arial size 20 sending window, initial brush, writefactory)
-	mDebugFont = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Arial", 20.0f);
+	//(Impact size 20 sending window, initial brush, writefactory)
+	mDebugFont = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Impact", 20.0f);
 
 #pragma region BTLTInit
 
@@ -590,12 +590,12 @@ bool BTLTAIDemo::Init(bool fullScreen)
 	mSelectedClassMenu->mOpacityValue = 0.0f;
 
 	//fonts -------------------------------
-	mUIFont16pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Showcard Gothic", 16.0f);
-	mUIFont18pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Showcard Gothic", 18.0f);
-	mUIFont30pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Showcard Gothic", 30.0f);
-	mUIFont36pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Showcard Gothic", 36.0f);
-	mUIFont48pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Showcard Gothic", 48.0f);
-	mUIFont90pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Showcard Gothic", 90.0f);
+	mUIFont16pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Impact", 16.0f);
+	mUIFont18pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Impact", 18.0f);
+	mUIFont30pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Impact", 30.0f);
+	mUIFont36pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Impact", 36.0f);
+	mUIFont48pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Impact", 48.0f);
+	mUIFont90pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Impact", 90.0f);
 
 
 #pragma region BTLTMapInit
@@ -821,7 +821,7 @@ bool BTLTAIDemo::Init(bool fullScreen)
 
 #pragma region BTLTXMLInit
 	//additional font size for display 
-	mUIFont60pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Showcard Gothic", 60.0f);
+	mUIFont60pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Impact", 60.0f);
 
 	//flag for if team is selected
 	mIsXMLMenuTeamSelected = false; 
@@ -917,8 +917,9 @@ bool BTLTAIDemo::Init(bool fullScreen)
 #pragma region AudioInit
 
 		mAudioMgr.GetSound("Titlescreen")->Play(1);
-		mAudioMgr.GetSound("Gameplay")->Play(1);
-		mAudioMgr.GetSound("Menu")->Play(1);
+		//mAudioMgr.GetSound("Gameplay")->Play(1);
+		//mAudioMgr.GetSound("Menu")->Play(1);
+	
 
 
 #pragma endregion AudioInit
@@ -5231,20 +5232,24 @@ void BTLTAIDemo::HandleEvents(DPhoenix::IEvent* e)
 		switch (mGameState)
 		{
 		case GAME_MENU_STATE:
+			mAudioMgr.GetSound("Menu")->Play(1);
 			if (mMenuState == CHOOSE_MENUSTATE)
 				CheckMouseHoverMenu();
 			break;
 		case GAME_MENU_SELECT_XML_STATE: 
+			mAudioMgr.GetSound("Menu")->Play(1);
 			CheckMouseHoverSelectXMLMenu(); 
 			break;
 		case GAME_MENU_CREATE_XML_STATE:
+			mAudioMgr.GetSound("Menu")->Play(1);
 			CheckMouseHoverCreateXMLMenu();
 			break;
 		case GAME_PLAY_STATE:
-			//change sounds
+			//change sounds -----
+			//stop menu sound
 			mAudioMgr.GetSound("Menu")->Stop();
 			mAudioMgr.GetSound("Menu")->SetPosition(0);
-			//play sound
+			//play game sound
 			mAudioMgr.GetSound("Gameplay")->Play(1);
 			if (mCurrentTeam == DPhoenix::PLAYER_TEAM)
 			{
@@ -5331,7 +5336,7 @@ void BTLTAIDemo::InitAudio()
 	mAudioMgr.CreateSound("Gameplay", "Audio\\Music\\Game.wav");
 
 	//FX
-	mAudioMgr.CreateSound("Gameplay", "Audio\\FX\\Footsteps.wav");
+	mAudioMgr.CreateSound("Footsteps", "Audio\\FX\\Footsteps.wav");
 
 }
 

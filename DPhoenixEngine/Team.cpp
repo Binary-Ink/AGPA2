@@ -15,19 +15,19 @@ DPhoenix::Team::Team()
 	//ono, magic number...
 	mActionstext.resize(13);
 
-	mActionstext[HIT_ACTION] = "HIT (1 TP)";
-	mActionstext[PISTOL_ACTION] = "PISTOL (2 TP)";
-	mActionstext[SHOTGUN_ACTION] = "SHOTGUN (3 TP)";
-	mActionstext[SCALE_THROW_ACTION] = "SCALE THROW (4 TP)";
-	mActionstext[CLAW_THROW_ACTION] = "CLAW THROW (4 TP)";
-	mActionstext[ROCKET_LAUNCHER_ACTION] = "ROCKET LAUNCHER (10 TP)";
-	mActionstext[FIRE_ACTION] = "FIRE (2 TP) / (25 MP)";
-	mActionstext[ICE_ACTION] = "ICE (3 TP) / (25 MP)";
-	mActionstext[LIGHTNING_ACTION] = "LIGHTNING (4 TP) / (50 MP)";
-	mActionstext[DARKNESS_ACTION] = "DARKNESS (5 TP) / (100 MP)";
-	mActionstext[FURBALL_ARCANA_ACTION] = "FURBALL (10 TP) / (50 MP)";
-	mActionstext[HOLD_STILL_ACTION] = "HOLD STILL";
-	mActionstext[LIGHT_BEACON_ACTION] = "LIGHT BEACON";
+	mActionstext[HIT_ACTION] = "Punch (1 TP)";
+	mActionstext[PISTOL_ACTION] = "Long Bow (2 TP)";
+	mActionstext[SHOTGUN_ACTION] = "Crossbow (3 TP)";
+	mActionstext[SCALE_THROW_ACTION] = "Throw Shotput (4 TP)";
+	mActionstext[CLAW_THROW_ACTION] = "Throw Daggers (4 TP)";
+	mActionstext[ROCKET_LAUNCHER_ACTION] = "Use Explosives (10 TP)";
+	mActionstext[FIRE_ACTION] = "Fire Elemental (2 TP) / (25 MP)";
+	mActionstext[ICE_ACTION] = "Ice Elemental (3 TP) / (25 MP)";
+	mActionstext[LIGHTNING_ACTION] = "Energy Elemental (4 TP) / (50 MP)";
+	mActionstext[DARKNESS_ACTION] = "Darkness Elemental(5 TP) / (100 MP)";
+	mActionstext[FURBALL_ARCANA_ACTION] = "Acid Attack (10 TP) / (50 MP)";
+	mActionstext[HOLD_STILL_ACTION] = "Hold Still";
+	mActionstext[LIGHT_BEACON_ACTION] = "Light Tower";
 		
 	mStatustext = "";
 
