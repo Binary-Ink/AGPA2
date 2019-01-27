@@ -586,19 +586,15 @@ bool BTLTAIDemo::Init(bool fullScreen)
 	mFloorColorMaps.insert(mFloorColorMaps.end(),
 		{ "Textures\\Floor\\Floor_B_cm.png", "Textures\\Floor\\Floor_C_cm.png",  "Textures\\Floor\\Floor_D_cm.png",
 		"Textures\\Floor\\Floor_F_cm.png",  "Textures\\Floor\\Floor_G_cm.png",  "Textures\\Floor\\Floor_H_cm.png",
-		"Textures\\Floor\\Floor_J_cm.png", "Textures\\Floor\\Floor_K_cm.png", "Textures\\Floor\\Floor_L_cm.png",
-		"Textures\\Floor\\Floor_M_cm.png", "Textures\\Floor\\Floor_N_cm.png", "Textures\\Floor\\Floor_P_cm.png",
-		"Textures\\Floor\\Floor_Q_cm.png", "Textures\\Floor\\Floor_R_cm.png", "Textures\\Floor\\Floor_S_cm.png",
-		"Textures\\Floor\\Floor_T_cm.png", "Textures\\Floor\\Floor_V_cm.png", "Textures\\Floor\\Floor_W_cm.png",
-		"Textures\\Floor\\Floor_X_cm.png", "Textures\\Floor\\Floor_Y_cm.png", "Textures\\Floor\\Floor_Z_cm.png" });
+		"Textures\\Floor\\Floor_J_cm.png", "Textures\\Floor\\Floor_K_cm.png"
+		
+		});
 	mFloorNormalMaps.insert(mFloorNormalMaps.end(),
 		{ "Textures\\Floor\\Floor_B_nm.png", "Textures\\Floor\\Floor_C_nm.png",  "Textures\\Floor\\Floor_D_nm.png",
 		"Textures\\Floor\\Floor_F_nm.png",  "Textures\\Floor\\Floor_G_nm.png",  "Textures\\Floor\\Floor_H_nm.png",
-		"Textures\\Floor\\Floor_J_nm.png", "Textures\\Floor\\Floor_K_nm.png", "Textures\\Floor\\Floor_L_nm.png",
-		"Textures\\Floor\\Floor_M_nm.png", "Textures\\Floor\\Floor_N_nm.png", "Textures\\Floor\\Floor_P_nm.png",
-		"Textures\\Floor\\Floor_Q_nm.png", "Textures\\Floor\\Floor_R_nm.png", "Textures\\Floor\\Floor_S_nm.png",
-		"Textures\\Floor\\Floor_T_nm.png", "Textures\\Floor\\Floor_V_nm.png", "Textures\\Floor\\Floor_W_nm.png",
-		"Textures\\Floor\\Floor_X_nm.png", "Textures\\Floor\\Floor_Y_nm.png", "Textures\\Floor\\Floor_Z_nm.png" });
+		"Textures\\Floor\\Floor_J_nm.png", "Textures\\Floor\\Floor_K_nm.png"
+	
+		});
 	mWallColorMaps.insert(mWallColorMaps.end(),
 		{ "Textures\\Wall\\Wall_A_cm.png", "Textures\\Wall\\Wall_E_cm.png", "Textures\\Wall\\Wall_I_cm.png",
 			"Textures\\Wall\\Wall_O_cm.png", "Textures\\Wall\\Wall_U_cm.png" });
