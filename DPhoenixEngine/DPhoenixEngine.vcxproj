@@ -185,6 +185,7 @@
     <ClInclude Include="TextureMgr.h" />
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="Waves.h" />
     <ClInclude Include="WeaponLine.h" />
     <ClInclude Include="WeaponMesh.h" />
     <ClInclude Include="XBoxPad.h" />
@@ -249,6 +250,7 @@
     <ClCompile Include="TextureMgr.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="Vertex.cpp" />
+    <ClCompile Include="Waves.cpp" />
     <ClCompile Include="WavRead.cpp" />
     <ClCompile Include="WeaponLine.cpp" />
     <ClCompile Include="WeaponMesh.cpp" />

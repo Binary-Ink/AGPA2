@@ -30,7 +30,8 @@ namespace DPhoenix
 				std::vector<std::string>& _wallColorMaps, std::vector<std::string>& _wallNormalMaps,
 				std::vector<std::string>& _coverColorMaps, std::vector<std::string>& _coverNormalMaps,
 				int tilesWidth, int tilesLength,
-				float tileSize);
+				float tileSize,
+				std::vector<XMFLOAT3>& waterSpawnVec);
 
 			~BTLTMap() { };
 					   

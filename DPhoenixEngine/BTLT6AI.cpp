@@ -311,6 +311,12 @@ private:
 	bool mEnableCelShading; 
 	bool mEnableInvert;
 
+	//for water
+	std::vector<XMFLOAT3> mWaterSpawnVec; 
+	std::vector<DPhoenix::Waves*> mWaterWavesVec; 
+
+	DPhoenix::GameTimer mWavesTimer; 
+
 #pragma endregion BTLTMShaderVars
 
 #pragma endregion BTLTMembers
@@ -418,6 +424,12 @@ public:
 	char BTLTAIDemo::ConvertInput(int input);
 
 #pragma endregion BTLTXMLLoaderMethods
+
+#pragma region WaterRenderer
+	void BTLTAIDemo::RenderLitTexNormWater(DPhoenix::Waves * model,
+		ID3DX11EffectTechnique * tech); 
+
+#pragma endregion WaterRenderer
 
 };
 
@@ -622,10 +634,26 @@ bool BTLTAIDemo::Init(bool fullScreen)
 
 	mGeoGen->CreateBox(20.0f, 20.0f, 20.0f, *mBox);
 
-	mMap = new DPhoenix::BTLTMap("Data\\Levels\\Level1.csv", &mTexMgr, md3dDevice,
+	mMap = new DPhoenix::BTLTMap("Data\\Levels\\Level1Water.csv", &mTexMgr, md3dDevice,
 		mEnemySpawnVec, mPlayerSpawnVec, mBeaconSpawnVec,
 		mBox, mFloorColorMaps, mFloorNormalMaps, mWallColorMaps, mWallNormalMaps,
-		mCoverColorMaps, mCoverNormalMaps, 30, 30, 20.0f);
+		mCoverColorMaps, mCoverNormalMaps, 30, 30, 20.0f, mWaterSpawnVec);
+
+	for (int i = 0; i < mWaterSpawnVec.size(); i++)
+	{
+		mWaterWavesVec.push_back(new DPhoenix::Waves()); 
+		//values come from example code
+		//grid is 10 x 10 vertices with distance of 2
+		//so total grid is 20x20
+		mWaterWavesVec.back()->Init(11, 11, 2.0f, 0.03f, 3.25f, 0.4f, md3dDevice); 
+		mWaterWavesVec.back()->mPosition = mWaterSpawnVec[i]; 
+		//colour map and normal map
+		mWaterWavesVec.back()->mWaterColorMapSRV = mTexMgr.CreateTexture("Textures\\Water\\water_cm.png");
+		mWaterWavesVec.back()->mWaterNormalMapSRV = mTexMgr.CreateTexture("Textures\\Water\\water_nm.png");
+		//static environment map of the skybox for reflection/refeaction
+		mWaterWavesVec.back()->mWaterEnvironmentalMapSRV = mTexMgr.CreateTexture("Textures\\Skybox\\bedroomSkybox.dds");
+
+	}
 
 
 	mCameraDistanceOffset = 50.0f;
@@ -2404,6 +2432,27 @@ void BTLTAIDemo::UpdateScene(float dt)
 		break;
 	case GAME_PLAY_STATE:
 
+#pragma region WaterUpdates
+
+		mWavesTimer.Tick(); 
+
+		if (mWavesTimer.TotalTime() > 20.0f)
+		{
+			//add new ripple
+			for (int i = 0; i < mWaterWavesVec.size(); i++)
+			{
+				mWaterWavesVec[i]->Disturb(5, 5, 0.5f); 
+			}
+			mWavesTimer.Reset(); 
+		}
+
+		//add new ripple 
+		for (int i = 0; i < mWaterWavesVec.size(); i++)
+		{
+			mWaterWavesVec[i]->Update(dt, md3dImmediateContext);
+		}
+#pragma endregion WaterUpdates
+
 		float zBase = sin(XMConvertToRadians(mCamToFocusAngle));
 		float xBase = cos(XMConvertToRadians(mCamToFocusAngle));
 
@@ -3507,6 +3556,13 @@ void BTLTAIDemo::DrawScene()
 
 #pragma endregion
 
+#pragma region WaterGrids
+
+		for (int i = 0; i < mWaterWavesVec.size(); i++)
+		{
+			RenderLitTexNormWater(mWaterWavesVec[i], activeLitTexNormalTech);
+		}
+#pragma endregion 
 
 		break;
 
@@ -5977,3 +6033,76 @@ void BTLTAIDemo::RenderSkinnedModelNormal(DPhoenix::SkinnedModelInstance * model
 	}
 }
 
+	void BTLTAIDemo::RenderLitTexNormWater(DPhoenix::Waves * model,
+		ID3DX11EffectTechnique * tech)
+	{
+		//create view/projection matrix
+		XMMATRIX view = mCamera->GetView(); 
+		XMMATRIX proj = mCamera->GetProj(); 
+
+		XMMATRIX viewProj = XMMatrixMultiply(view, proj); 
+
+		//concatenate matrices for rendering
+		XMMATRIX world = model->CalculateTransforms(); 
+
+		DPhoenix::Effects::LitTexNormalFX->SetWorld(
+			world
+		);
+
+		XMMATRIX worldviewProj = XMMatrixMultiply(world, viewProj); 
+		DPhoenix::Effects::LitTexNormalFX->SetWorldViewProj(worldviewProj); 
+
+		//inverse transpose is applied to normals so 0 out translation row so that it doesn't get 
+		//into the inverse transpose calc
+		
+		XMMATRIX A = world; 
+		A.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f); 
+
+		XMVECTOR det = XMMatrixDeterminant(A); 
+
+		DPhoenix::Effects::LitTexNormalFX->SetWorldInvTranspose(
+			XMMatrixTranspose(XMMatrixInverse(&det, A))
+		); 
+
+		DPhoenix::Effects::LitTexNormalFX->SetAmbLight(XMLoadFloat4(&mAmbientColor));
+		DPhoenix::Effects::LitTexNormalFX->SetAmbIntensity(mAmbIntensity);
+
+		DPhoenix::Effects::LitTexNormalFX->SetEyePosW(mCamera->mPosition); 
+		DPhoenix::Effects::LitTexNormalFX->SetFogEnabled(mFogEnabled); 
+		DPhoenix::Effects::LitTexNormalFX->SetFogColor(XMLoadFloat4(&mFogColor));
+		DPhoenix::Effects::LitTexNormalFX->SetFogStart(mFogStart); 
+		DPhoenix::Effects::LitTexNormalFX->SetFogRange(mFogRange);
+
+		//new for water
+		DPhoenix::Effects::LitTexNormalFX->SetOpacityValue(1.0f);
+		DPhoenix::Effects::LitTexNormalFX->SetWaterEnabled(true); 
+		DPhoenix::Effects::LitTexNormalFX->SetMaterial(*model->mWavesMat);
+		DPhoenix::Effects::LitTexNormalFX->SetCubeMap(model->mWaterEnvironmentalMapSRV);
+		DPhoenix::Effects::LitTexNormalFX->SetDiffuseMap(model->mWaterColorMapSRV); 
+		DPhoenix::Effects::LitTexNormalFX->SetNormalMap(model->mWaterNormalMapSRV); 
+
+		DPhoenix::Effects::LitTexNormalFX->SetDirLights(mDirLightsArray); 
+
+		DPhoenix::Effects::LitTexNormalFX->SetDirLightCount(mNumDirLights); 
+
+		DPhoenix::Effects::LitTexNormalFX->SetPointLights(mPointLightsArray); 
+		DPhoenix::Effects::LitTexNormalFX->SetPointLightCount(mNumPointLights); 
+
+		DPhoenix::Effects::LitTexNormalFX->SetCelEnabled(mEnableCelShading);
+		DPhoenix::Effects::LitTexNormalFX->SetInvertEnabled(mEnableInvert); 
+
+		//render using effect shader technique 
+		D3DX11_TECHNIQUE_DESC techDesc;
+		tech->GetDesc(&techDesc); 
+		for (UINT p = 0; p < techDesc.Passes; ++p)
+		{
+			//use current context and get current rendering pass
+			tech->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
+
+			//call render method of sprite obj
+			model->Render(md3dImmediateContext); 
+		}
+		//reset for other objects
+		DPhoenix::Effects::LitTexNormalFX->SetWaterEnabled(0.0f); 
+
+}

@@ -148,5 +148,6 @@
 #include "BasicModel.h"
 #include "SkinnedModel.h"
 #include "Line.h"
+#include "Waves.h"
 
 

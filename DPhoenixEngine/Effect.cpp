@@ -37,7 +37,7 @@ namespace DPhoenix
 
 		// compilationMsgs can store errors or warnings.
 		//hence message if there are any
-		if (compilationMsgs != 0)
+		if (compilationMsgs != 0 && FAILED(hr))
 		{
 			MessageBoxA(0, (char*)compilationMsgs->GetBufferPointer(), 0, 0);
 			ReleaseCOM(compilationMsgs);
@@ -234,6 +234,10 @@ namespace DPhoenix
 		CelEnabled = mFX->GetVariableByName("gCelShaderEnabled"); 
 		InvertEnabled = mFX->GetVariableByName("gInvertEnabled");
 	
+		WaterEnabled = mFX->GetVariableByName("gWaterShaderEnabled"); 
+		CubeMap = mFX->GetVariableByName("gReflectCubeMap")->AsShaderResource(); 
+
+
 	}
 
 	LitTextureNormalEffect::~LitTextureNormalEffect()

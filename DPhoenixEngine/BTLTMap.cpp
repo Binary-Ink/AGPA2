@@ -9,7 +9,8 @@ DPhoenix::BTLTMap::BTLTMap(std::string filename, TextureMgr* mTexMgr, ID3D11Devi
 	std::vector<std::string>& _wallColorMaps, std::vector<std::string>& _wallNormalMaps,
 	std::vector<std::string>& _coverColorMaps, std::vector<std::string>& _coverNormalMaps,
 	int tilesWidth, int tilesLength,
-	float tileSize)
+	float tileSize,
+	std::vector<XMFLOAT3>& waterSpawnVec)
 {
 	//get from CSV file and populate 2D vector
 	std::ifstream inMapFile(filename);
@@ -209,8 +210,19 @@ DPhoenix::BTLTMap::BTLTMap(std::string filename, TextureMgr* mTexMgr, ID3D11Devi
 							col, row, tileSize, DPhoenix::ENEMY_SP_FLAG);
 
 						enemySpawnVec[3] = XMFLOAT3(col * tileSize, tileSize / 2 + 5.0f, row * tileSize);
-
 					break;
+					case 'w':
+						//set water block and add spawn vector to position
+						mTiles[col][row] = new MapBlock(DPhoenix::WATER_MAPBLOCK,
+							mTexMgr, md3dDevice, _Box,
+							_floorColorMaps, _floorNormalMaps,
+							_wallColorMaps, _wallNormalMaps,
+							_coverColorMaps, _coverNormalMaps,
+							col, row, tileSize, DPhoenix::NO_SP_FLAG);
+
+						waterSpawnVec.push_back(XMFLOAT3(col * tileSize, 10.0f, row * tileSize)); 
+						break; 
+
 					}
 					//increment column
 					col++;
@@ -248,6 +260,11 @@ XMFLOAT3 DPhoenix::BTLTMap::GetPositionAboveFromMapRef(int col, int row)
 	XMFLOAT3 position;
 
 	position.x = col * 20.0f;
+
+	if (mTiles[col][row]->mMapBlockType == FLOOR_MAPBLOCK ||
+		mTiles[col][row]->mMapBlockType == BEACON_MAPBLOCK ||
+		mTiles[col][row]->mMapBlockType == WATER_MAPBLOCK)
+		position.y = 10.5f; 
 	
 	if (mTiles[col][row]->mMapBlockType == FLOOR_MAPBLOCK ||
 		mTiles[col][row]->mMapBlockType == BEACON_MAPBLOCK)

@@ -363,6 +363,17 @@ namespace DPhoenix
 		void SetInvertEnabled(bool b) { InvertEnabled->SetRawValue(&b, 0, sizeof(bool)); }
 
 
+	//water effects
+		ID3DX11EffectVariable* WaterEnabled;
+		void SetWaterEnabled(bool b) { WaterEnabled->SetRawValue(&b, 0, sizeof(bool)); }
+
+		ID3DX11EffectShaderResourceVariable* CubeMap; 
+		void SetCubeMap(ID3D11ShaderResourceView* cubemap) {
+			CubeMap->SetResource(cubemap); 
+		}
+
+		//going to use default shader values, but could add additional to experiment 
+
 	};
 #pragma endregion
 

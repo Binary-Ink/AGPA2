@@ -112,6 +112,7 @@ DPhoenix::MapBlock::MapBlock(MapBlockTypes _blockType, TextureMgr * _texMgr,
 
 		break;
 		case NULLSPACE_MAPBLOCK:
+		case WATER_MAPBLOCK:
 			mMeshInstance = NULL;
 		break;
 	}
