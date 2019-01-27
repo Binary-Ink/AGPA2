@@ -230,6 +230,10 @@ namespace DPhoenix
 		AmbientColor = mFX->GetVariableByName("gAmbientColor")->AsVector();
 
 		OpacityValue = mFX->GetVariableByName("gOpacityValue")->AsScalar();
+
+		CelEnabled = mFX->GetVariableByName("gCelShaderEnabled"); 
+		InvertEnabled = mFX->GetVariableByName("gInvertEnabled");
+	
 	}
 
 	LitTextureNormalEffect::~LitTextureNormalEffect()

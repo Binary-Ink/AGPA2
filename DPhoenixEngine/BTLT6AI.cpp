@@ -306,6 +306,13 @@ private:
 
 #pragma endregion BTLTXMLLoader
 
+#pragma region BTLTShaderVars
+
+	bool mEnableCelShading; 
+	bool mEnableInvert;
+
+#pragma endregion BTLTMShaderVars
+
 #pragma endregion BTLTMembers
 
 public:
@@ -881,7 +888,12 @@ bool BTLTAIDemo::Init(bool fullScreen)
 
 	mAudioMgr.GetSound("Titlescreen")->Play(1); 
 
+#pragma region BTLTShaderInit 
 
+	mEnableCelShading = false; 
+	mEnableInvert = false; 
+
+#pragma endregion BTLTShaderInit
 
 
 	return true;
@@ -2587,6 +2599,18 @@ void BTLTAIDemo::UpdateScene(float dt)
 			opposingTeam = mPlayerTeam;
 		}
 
+		//trigger invert if darkness action being used
+
+		if (currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mTurnState == DPhoenix::CH_ACTIVE_TURNSTATE
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mMoveState == DPhoenix::CH_DOAC_MOVESTATE
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mSelectedAction == DPhoenix::DARKNESS_ACTION)
+		{
+			mEnableInvert = true; 
+		}
+		else
+		{
+			mEnableInvert = false; 
+		}
 
 		if (currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mTurnState == DPhoenix::CH_ACTIVE_TURNSTATE
 			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mMoveState == DPhoenix::CH_DOAC_MOVESTATE
@@ -5091,6 +5115,12 @@ void BTLTAIDemo::HandleEvents(DPhoenix::IEvent* e)
 		DPhoenix::KeyReleaseEvent* kre = (DPhoenix::KeyReleaseEvent*)e;
 		switch (kre->mKeycode)
 		{
+		case DIK_SEMICOLON:
+			if (mEnableCelShading)
+				mEnableCelShading = false;
+			else
+				mEnableCelShading = true; 
+			break;
 		case DIK_Q:
 			mCameraBehindFlag = true;
 			break;
@@ -5498,6 +5528,10 @@ void BTLTAIDemo::RenderLitTexNormPrimitive(DPhoenix::PrimitiveInstance * model,
 
 	DPhoenix::Effects::LitTexNormalFX->SetPointLights(mPointLightsArray);
 	DPhoenix::Effects::LitTexNormalFX->SetPointLightCount(mNumPointLights);
+
+	DPhoenix::Effects::LitTexNormalFX->SetCelEnabled(mEnableCelShading); 
+	DPhoenix::Effects::LitTexNormalFX->SetInvertEnabled(mEnableInvert);
+
 
 	//render using effect shader technique
 	D3DX11_TECHNIQUE_DESC techDesc;

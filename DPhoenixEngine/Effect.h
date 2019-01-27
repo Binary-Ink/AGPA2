@@ -355,6 +355,14 @@ namespace DPhoenix
 		//for transparency
 		ID3DX11EffectScalarVariable* OpacityValue;
 
+		//post effects
+		ID3DX11EffectVariable* CelEnabled; 
+		void SetCelEnabled(bool b) { CelEnabled->SetRawValue(&b, 0, sizeof(bool));  }
+
+		ID3DX11EffectVariable* InvertEnabled;
+		void SetInvertEnabled(bool b) { InvertEnabled->SetRawValue(&b, 0, sizeof(bool)); }
+
+
 	};
 #pragma endregion
 
