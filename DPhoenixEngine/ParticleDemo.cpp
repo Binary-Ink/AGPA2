@@ -807,7 +807,7 @@
 //
 //	////here we will render the box using our new method
 //	////we send the pointer to the instance and also the texture rendering technique
-//	////(using Texture.fx)
+//	////(using Texture)
 //	//for (int i = 0; i < mColorBoxes.size(); i++)
 //	//{
 //	//	RenderBasicTexPrimitive(mColorBoxes[i], activeBasicTexTech);

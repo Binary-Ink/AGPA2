@@ -32,9 +32,9 @@ DPhoenix::CharacterClass::CharacterClass(CharacterClasses _class, TextureMgr * _
 	{
 		case TOY_SOLDIER_CLASS:
 			mModelInstance = new PrimitiveInstance();
-			mModelInstance->LoadLitTexInstance(md3dDevice, "Models\\Jellyfish.dae", mBox, mTexMgr);
+			mModelInstance->LoadLitTexInstance(md3dDevice, "Textures\\Temp\\AngelTemp_cm.png", mBox, mTexMgr);
 			mModelInstance->mMaterial = materialStandard;
-			mModelInstance->mNormalMap = mTexMgr->CreateTexture("Models\\Jellyfish.png");
+			mModelInstance->mNormalMap = mTexMgr->CreateTexture("Textures\\Temp\\AngelTemp_cm.png");
 			mModelInstance->mHalfSizes = XMFLOAT3(4.0f, 4.0f, 4.0f);
 		break;
 		case DARK_ANGEL_CLASS:
@@ -117,6 +117,7 @@ DPhoenix::CharacterClass::~CharacterClass()
 
 void DPhoenix::CharacterClass::SetBaseStats()
 {
+	//CHANGE THESEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 	//as defined in the spreadsheet and GDD
 	switch(mClass)
 	{
@@ -321,6 +322,8 @@ void DPhoenix::CharacterClass::Update(float dt)
 					{
 						case CH_MOVERT_MOVESTATE:
 
+							//WHEN PLAYER MOVES, PLAY MUSIC (I ADDED THIS)
+
 							if (!mAudioMgr->GetSound("Titlescreen")->IsPlaying()) {
 								mAudioMgr->GetSound("Titlescreen")->Play(true); 
 							}
@@ -350,6 +353,7 @@ void DPhoenix::CharacterClass::Update(float dt)
 							{
 								mHappyPath.erase(mHappyPath.begin());
 
+								//END MUSIC
 								if (mHappyPath.size() == 0)
 								{
 									mMoveState = CH_PICKAC_MOVESTATE;
@@ -396,6 +400,8 @@ void DPhoenix::CharacterClass::Update(float dt)
 			{
 				mModelInstance->mScale.y = 0.1f;
 				mModelInstance->mPosition.y = 1.0f;
+
+				//COULD PLAY SOUND FX HERE
 
 				mLifeState = CH_DEAD_LIFESTATE;
 				mModelInstance->mCollidable = false;

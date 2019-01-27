@@ -48,7 +48,7 @@
 #pragma comment(lib, "dinput8.lib")						//DirectInput8
 #pragma comment(lib, "xinput.lib")						//X-Input (pads)
 #pragma comment(lib, "winmm.lib")						//Windows MultiMedia
-#pragma comment(lib, "D3DCompiler.lib")					//shader compilation
+#pragma comment(lib, "D3DCompiler.lib")					//compilation
 #pragma comment(lib, "dxerr.lib")						//DX Err checking
 #pragma comment(lib, "dxgi.lib")						//DX graphics infrastructure
 #pragma comment(lib, "dxguid.lib")						//Global ID
@@ -119,6 +119,11 @@
 // Headers for Engine Files
 //---------------------------------------------------------------------------------------
 
+//XML loading
+#include "tinyxml2.h"
+#include "TeamLoader.h"
+
+//Everything else
 #include "Entity.h"
 #include "Logfile.h"
 #include "GameTimer.h"

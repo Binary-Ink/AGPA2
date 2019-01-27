@@ -10,7 +10,7 @@ namespace DPhoenix
 	class Effect
 	{
 	public:
-		//we need the D3D device and shader filenameto construct
+		//we need the D3D device and filename to construct
 		Effect(ID3D11Device* device, const std::string& filename);
 		virtual ~Effect();
 

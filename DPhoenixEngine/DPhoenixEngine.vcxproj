@@ -181,7 +181,9 @@
     <ClInclude Include="SoundLayer.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Team.h" />
+    <ClInclude Include="TeamLoader.h" />
     <ClInclude Include="TextureMgr.h" />
+    <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="WeaponLine.h" />
     <ClInclude Include="WeaponMesh.h" />
@@ -242,8 +244,10 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StaticMeshDemo.cpp" />
     <ClCompile Include="Team.cpp" />
+    <ClCompile Include="TeamLoader.cpp" />
     <ClCompile Include="TextureDemo.cpp" />
     <ClCompile Include="TextureMgr.cpp" />
+    <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="WavRead.cpp" />
     <ClCompile Include="WeaponLine.cpp" />

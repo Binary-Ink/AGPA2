@@ -13,6 +13,8 @@ enum GameStates
 {
 	GAME_TITLE_STATE,
 	GAME_MENU_STATE,
+	GAME_MENU_SELECT_XML_STATE, 
+	GAME_MENU_CREATE_XML_STATE, 
 	GAME_PLAY_STATE,
 	GAME_OVER_STATE
 };
@@ -265,6 +267,45 @@ private:
 
 #pragma endregion BTLTActions
 
+#pragma region BTLTXMLLoader
+	//additional font size for diaplsy
+	DPhoenix::Font* mUIFont60pt; 
+
+	//flag for is team is selected
+	bool mIsXMLMenuTeamSelected; //flag for team selected
+	int mIDTeamSelected; //id of selected team in xml
+
+	//the loader class for the xml team data
+	DPhoenix::TeamLoader* mTeamLoader; 
+
+	//interface backgrounds
+	DPhoenix::Sprite* mSelectTeamXMLBG; 
+	DPhoenix::Sprite* mCreateTeamXMLBG; 
+
+	//hover overlays
+	DPhoenix::Sprite* mHoverCreateNew; 
+	DPhoenix::Sprite* mHoverDelete;
+	DPhoenix::Sprite* mHoverStart;
+	//create menu hover overlays
+	DPhoenix::Sprite* mHoverTeamMember1;
+	DPhoenix::Sprite* mHoverTeamMember2;
+	DPhoenix::Sprite* mHoverTeamMember3;
+	DPhoenix::Sprite* mHoverTeamMember4;
+	DPhoenix::Sprite* mHoverTeamName;
+	DPhoenix::Sprite* mHoverMemberName;
+	DPhoenix::Sprite* mHoverSave;
+	DPhoenix::Sprite* mHoverBack;
+	
+	//flags for text entry
+	bool mIsTeamNameClicked; 
+	bool mIsMemberNameClicked; 
+
+	//for team creation
+	int mCreateMemberID; //member id to edit
+	DPhoenix::Team* mCreateMenuTeam; 
+
+#pragma endregion BTLTXMLLoader
+
 #pragma endregion BTLTMembers
 
 public:
@@ -352,6 +393,24 @@ public:
 
 #pragma endregion BTLTMethods
 
+#pragma region BTLTXMLLoaderMethods
+	void BTLTAIDemo::CheckMouseHoverSelectXMLMenu();
+	void BTLTAIDemo::CheckMouseClickSelectXMLMenu();
+	
+	void BTLTAIDemo::CheckMouseHoverCreateXMLMenu();
+	void BTLTAIDemo::CheckMouseClickCreateXMLMenu();
+
+	void BTLTAIDemo::EditTeamName(DPhoenix::KeyReleaseEvent* key);
+	void BTLTAIDemo::EditMemberName(DPhoenix::KeyReleaseEvent* key);
+
+	void BTLTAIDemo::StartGameFromXML();
+	void BTLTAIDemo::SaveCreateMenu();
+	void BTLTAIDemo::InitCreateMenu();
+
+	bool BTLTAIDemo::CheckInput(int input);
+	char BTLTAIDemo::ConvertInput(int input);
+
+#pragma endregion BTLTXMLLoaderMethods
 
 };
 
@@ -729,6 +788,98 @@ bool BTLTAIDemo::Init(bool fullScreen)
 
 #pragma endregion BTLTActionsInit
 
+#pragma region BTLTXMLInit
+	//additional font size for display 
+	mUIFont60pt = new DPhoenix::Font(mhMainWnd, mBlackBrush, mDWriteFactory, "Showcard Gothic", 60.0f);
+
+	//flag for if team is selected
+	mIsXMLMenuTeamSelected = false; 
+	mIDTeamSelected = 0; 
+
+	//the loader class for the XML team data
+	//create new teamLoader instance
+	mTeamLoader =
+		new DPhoenix::TeamLoader(); 
+
+	//these use the windows functions GetModuleFileName to get the full path of the app running
+	char buffer[MAX_PATH]; 
+	GetModuleFileName(NULL, buffer, MAX_PATH); 
+	std::string filename = std::string(buffer); 
+	//now we cut off the actual file/exe from path
+	filename = filename.substr(0, filename.find_last_of("\\/")); 
+	//and then concatenate the name of the XML file to load
+	filename = filename + "\\Data\\memorycard.xml"; 
+	//this is then passed to init to load xml file
+	mTeamLoader->Init(filename); 
+
+	if (mTeamLoader->GetTeams().size() > 0)
+		mIsXMLMenuTeamSelected = true; 
+
+	//interface backgrounds
+	mSelectTeamXMLBG = new DPhoenix::Sprite();
+	mSelectTeamXMLBG->Load("Textures\\Screens\\Screen_SelectTeamBG.png", &mTexMgr, 1600.0f, 900.0f, md3dDevice);
+
+	mCreateTeamXMLBG = new DPhoenix::Sprite();
+	mCreateTeamXMLBG->Load("Textures\\Screens\\Screen_CreateTeamBG.png", &mTexMgr, 1600.0f, 900.0f, md3dDevice);
+
+	//hover overlqays
+	mHoverCreateNew = new DPhoenix::Sprite(); 
+	mHoverCreateNew->Load("Textures\\UI\\HoverCreateNewTeam.png", &mTexMgr, 800.0f, 250.0f, md3dDevice);
+	mHoverCreateNew->mPosition = XMFLOAT3(-400.0f, -325.0f, 1.0f); //position from documentation
+	mHoverCreateNew->mOpacityValue = 0.0f; 
+	
+	mHoverDelete = new DPhoenix::Sprite();
+	mHoverDelete->Load("Textures\\UI\\HoverOptionsXML.png", &mTexMgr, 400.0f, 250.0f, md3dDevice);
+	mHoverDelete->mPosition = XMFLOAT3(200.0f, -325.0f, 1.0f); //position from documentation
+	mHoverDelete->mOpacityValue = 0.0f;
+
+	mHoverStart = new DPhoenix::Sprite();
+	mHoverStart->Load("Textures\\UI\\HoverOptionsXML.png", &mTexMgr, 400.0f, 250.0f, md3dDevice);
+	mHoverStart->mPosition = XMFLOAT3(600.0f, -325.0f, 1.0f); //position from documentation
+	mHoverStart->mOpacityValue = 0.0f;
+
+	mHoverTeamMember1 = new DPhoenix::Sprite();
+	mHoverTeamMember1->Load("Textures\\UI\\HoverTeamMemberXML.png", &mTexMgr, 800.0f, 50.0f, md3dDevice);
+	mHoverTeamMember1->mPosition = XMFLOAT3(-300.0f, 175.0f, 1.0f); //position from documentation
+	mHoverTeamMember1->mOpacityValue = 0.0f;
+
+	mHoverTeamMember2 = new DPhoenix::Sprite();
+	mHoverTeamMember2->Load("Textures\\UI\\HoverTeamMemberXML.png", &mTexMgr, 800.0f, 50.0f, md3dDevice);
+	mHoverTeamMember2->mPosition = XMFLOAT3(-300.0f, 75.0f, 1.0f); //position from documentation
+	mHoverTeamMember2->mOpacityValue = 0.0f;
+	
+	mHoverTeamMember3 = new DPhoenix::Sprite();
+	mHoverTeamMember3->Load("Textures\\UI\\HoverTeamMemberXML.png", &mTexMgr, 800.0f, 50.0f, md3dDevice);
+	mHoverTeamMember3->mPosition = XMFLOAT3(-300.0f, -25.0f, 1.0f); //position from documentation
+	mHoverTeamMember3->mOpacityValue = 0.0f;
+
+	mHoverTeamMember4 = new DPhoenix::Sprite();
+	mHoverTeamMember4->Load("Textures\\UI\\HoverTeamMemberXML.png", &mTexMgr, 800.0f, 50.0f, md3dDevice);
+	mHoverTeamMember4->mPosition = XMFLOAT3(-300.0f, -125.0f, 1.0f); //position from documentation
+	mHoverTeamMember4->mOpacityValue = 0.0f;
+
+	mHoverTeamName = new DPhoenix::Sprite();
+	mHoverTeamName->Load("Textures\\UI\\HoverTeamNameXML.png", &mTexMgr, 450.0f, 50.0f, md3dDevice);
+	mHoverTeamName->mPosition = XMFLOAT3(-125.0f, 275.0f, 1.0f); //position from documentation
+	mHoverTeamName->mOpacityValue = 0.0f;
+
+	mHoverMemberName = new DPhoenix::Sprite();
+	mHoverMemberName->Load("Textures\\UI\\HoverMemberNameXML.png", &mTexMgr, 350.0f, 50.0f, md3dDevice);
+	mHoverMemberName->mPosition = XMFLOAT3(525.0f, 175.0f, 1.0f); //position from documentation
+	mHoverMemberName->mOpacityValue = 0.0f;
+
+	mHoverSave = new DPhoenix::Sprite();
+	mHoverSave->Load("Textures\\UI\\HoverOptionsXML.png", &mTexMgr, 400.0f, 250.0f, md3dDevice);
+	mHoverSave->mPosition = XMFLOAT3(-150.0f, -325.0f, 1.0f); //position from documentation
+	mHoverSave->mOpacityValue = 0.0f;
+	
+	mHoverBack = new DPhoenix::Sprite();
+	mHoverBack->Load("Textures\\UI\\HoverOptionsXML.png", &mTexMgr, 400.0f, 250.0f, md3dDevice);
+	mHoverBack->mPosition = XMFLOAT3(-600.0f, -325.0f, 1.0f); //position from documentation
+	mHoverBack->mOpacityValue = 0.0f;
+
+#pragma endregion BTLTXMLInit
+
 
 #pragma endregion BTLTInit
 
@@ -897,6 +1048,691 @@ void BTLTAIDemo::CheckMouseClickMenu()
 		}
 	}
 
+}
+
+void BTLTAIDemo::CheckMouseHoverSelectXMLMenu()
+{
+	//lots of constants and magic numbers - could be fixed to add meaning 
+	//adjustments to be made to positions as DX11has origin as 0,0 in center
+
+	int mouseX = mMouseX - 800; 
+	int mouseY = 450 - mMouseY;
+
+	//create new team area 
+	int ntLeft = -800; int ntTop = -200; int ntRight = ntLeft + 800; int ntBottom = ntTop - 250; 
+
+	//delete area 
+	int delLeft = 0; int delTop = -200; int delRight = delLeft + 400; int delBottom = delTop - 250;
+
+	//startarea 
+	int stLeft = 400; int stTop = -200; int stRight = stLeft + 400; int stBottom = stTop - 250;
+
+	//reset opacity values for all hover overlays
+	mHoverCreateNew->mOpacityValue = 0.0f; 
+	mHoverDelete->mOpacityValue = 0.0f; 
+	mHoverStart->mOpacityValue = 0.0f; 
+
+	//check each area to set the opacity values of highlighted hover overlays
+	if (CheckPointInRect(mouseX, mouseY, ntLeft, ntTop, ntRight, ntBottom))
+	{
+		mHoverCreateNew->mOpacityValue = 1.0f; 
+
+	}
+	else if (CheckPointInRect(mouseX, mouseY, delLeft, delTop, delRight, delBottom) 
+		&& mIsXMLMenuTeamSelected)
+	{
+		mHoverDelete->mOpacityValue = 1.0f; 
+	}
+	else if (CheckPointInRect(mouseX, mouseY, stLeft, stTop, stRight, stBottom) 
+		&& mIsXMLMenuTeamSelected)
+	{
+		mHoverStart->mOpacityValue = 1.0f;
+	}
+}
+
+void BTLTAIDemo::CheckMouseClickSelectXMLMenu()
+{
+	int mouseX = mMouseX - 800;
+	int mouseY = 450 - mMouseY;
+
+	//create new team area 
+	int ntLeft = -800; int ntTop = -200; int ntRight = ntLeft + 800; int ntBottom = ntTop - 250;
+
+	//delete area 
+	int delLeft = 0; int delTop = -200; int delRight = delLeft + 400; int delBottom = delTop - 250;
+
+	//Start area 
+	int stLeft = 400; int stTop = -200; int stRight = stLeft + 400; int stBottom = stTop - 250;
+
+	//left arrow 
+	int laLeft = -700; int laTop = 150; int laRight = laLeft + 50; int laBottom = laTop - 50;
+
+	//right arrow 
+	int raLeft = 650; int raTop = 150; int raRight = raLeft + 50; int raBottom = raTop - 50;
+
+	if (CheckPointInRect(mouseX, mouseY, ntLeft, ntTop, ntRight, ntBottom))
+	{
+		//go to create team menu
+		mGameState = GAME_MENU_CREATE_XML_STATE; 
+		InitCreateMenu(); 
+	}
+	else if (CheckPointInRect(mouseX, mouseY, stLeft, stTop, stRight, stBottom)
+		&& mIsXMLMenuTeamSelected)
+	{
+		//start
+		StartGameFromXML(); 
+	}
+	else if (CheckPointInRect(mouseX, mouseY, laLeft, laTop, laRight, laBottom)
+		&& mIsXMLMenuTeamSelected)
+	{
+		//move left in team select
+
+		//get bounding values
+		int lowestIndex = 0; 
+		int highestIndex = mTeamLoader->GetTeams().size() - 1; 
+
+		mIDTeamSelected--; 
+		if (mIDTeamSelected < lowestIndex)
+		{
+			//after the lowest number is selected, selct the highest to cycle options
+			mIDTeamSelected = highestIndex;
+		}
+
+		mTeamLoader->GetTeamAt(mIDTeamSelected); 
+	}
+
+	else if (CheckPointInRect(mouseX, mouseY, raLeft, raTop, raRight, raBottom)
+		&& mIsXMLMenuTeamSelected)
+	{
+		//move right in team select
+
+		//get bounding values
+		int lowestIndex = 0; 
+		int highestIndex = mTeamLoader->GetTeams().size() - 1;
+
+		mIDTeamSelected++;
+		if (mIDTeamSelected > highestIndex)
+		{
+			//after the highest number is selected, selct the lowest to cycle options
+			mIDTeamSelected = lowestIndex;
+		}
+		mTeamLoader->GetTeamAt(mIDTeamSelected);
+
+	}
+}
+
+void BTLTAIDemo::CheckMouseHoverCreateXMLMenu()
+{
+	int mouseX = mMouseX - 800; 
+	int mouseY = 450 - mMouseY; 
+
+	//member 1 area
+	int m1Left = -700; int m1Top = 200; int m1Right = m1Left + 800; int m1Bottom = m1Top - 50; 
+
+	//member 2 area
+	int m2Left = -700; int m2Top = 100; int m2Right = m2Left + 800; int m2Bottom = m2Top - 50;
+
+	//member 3 area
+	int m3Left = -700; int m3Top = 0; int m3Right = m3Left + 800; int m3Bottom = m3Top - 50;
+
+	//member 4 area
+	int m4Left = -700; int m4Top = -100; int m4Right = m4Left + 800; int m4Bottom = m4Top - 50;
+
+	//team name area
+	int tnLeft = -350; int tnTop = 300; int tnRight = tnLeft + 450; int tnBottom = tnTop - 50;
+
+	//member name area
+	int mnLeft = 350; int mnTop = 200; int mnRight = mnLeft + 350; int mnBottom = mnTop - 50;
+
+	//save area
+	int saLeft = -350; int saTop = -200; int saRight = saLeft + 400; int saBottom = saTop - 250;
+
+	//back area
+	int baLeft = -800; int baTop = -200; int baRight = baLeft + 400; int baBottom = baTop - 250;
+
+
+	//reset all opacity values until collision
+	mHoverTeamMember1->mOpacityValue = 0.0f; 
+	mHoverTeamMember2->mOpacityValue = 0.0f;
+	mHoverTeamMember3->mOpacityValue = 0.0f;
+	mHoverTeamMember4->mOpacityValue = 0.0f;
+	mHoverTeamName->mOpacityValue = 0.0f;
+	mHoverMemberName->mOpacityValue = 0.0f;
+	mHoverSave->mOpacityValue = 0.0f;
+	mHoverBack->mOpacityValue = 0.0f;
+
+	if (CheckPointInRect(mouseX, mouseY, m1Left, m1Top, m1Right, m1Bottom))
+	{
+		mHoverTeamMember1->mOpacityValue = 1.0f; 
+	}
+	else if (CheckPointInRect(mouseX, mouseY, m2Left, m2Top, m2Right, m2Bottom))
+	{
+		mHoverTeamMember2->mOpacityValue = 1.0f;
+	}
+	else if (CheckPointInRect(mouseX, mouseY, m3Left, m3Top, m3Right, m3Bottom))
+	{
+		mHoverTeamMember3->mOpacityValue = 1.0f;
+	}
+	else if (CheckPointInRect(mouseX, mouseY, m4Left, m4Top, m4Right, m4Bottom))
+	{
+		mHoverTeamMember4->mOpacityValue = 1.0f;
+	}
+	else if (CheckPointInRect(mouseX, mouseY, tnLeft, tnTop, tnRight, tnBottom))
+	{
+		mHoverTeamName->mOpacityValue = 1.0f;
+	}
+	else if (CheckPointInRect(mouseX, mouseY, mnLeft, mnTop, mnRight, mnBottom))
+	{
+		mHoverMemberName->mOpacityValue = 1.0f;
+	}
+	else if (CheckPointInRect(mouseX, mouseY, saLeft, saTop, saRight, saBottom))
+	{
+		mHoverSave->mOpacityValue = 1.0f;
+	}
+	else if (CheckPointInRect(mouseX, mouseY, baLeft, baTop, baRight, baBottom))
+	{
+		mHoverBack->mOpacityValue = 1.0f;
+	}
+}
+
+void BTLTAIDemo::CheckMouseClickCreateXMLMenu()
+{
+	// lots of constants / magic numbers here - this could be fixed to add more meaning
+	//adjustments to be made to positions as DX11 has origin as 0,0 in centre
+
+	int mouseX = mMouseX - 800;
+	int mouseY = 450 - mMouseY;
+
+	// member 1 area
+	int m1Left = -700; int m1Top = 200; int m1Right = m1Left + 800; int m1Bottom = m1Top - 50;
+
+	// member 2 area
+	int m2Left = -700; int m2Top = 100; int m2Right = m2Left + 800; int m2Bottom = m2Top - 50;
+
+	// member 3 area
+	int m3Left = -700; int m3Top = 0; int m3Right = m3Left + 800; int m3Bottom = m3Top - 50;
+
+	// member 4 area
+	int m4Left = -700; int m4Top = -100; int m4Right = m4Left + 800; int m4Bottom = m4Top - 50;
+
+	// team name area
+	int tnLeft = -350; int tnTop = 300; int tnRight = tnLeft + 450; int tnBottom = tnTop - 50;
+
+	// member name area
+	int mnLeft = 350; int mnTop = 200; int mnRight = mnLeft + 350; int mnBottom = mnTop - 50;
+
+	// save area
+	int saLeft = -350; int saTop = -200; int saRight = saLeft + 400; int saBottom = saTop - 250;
+
+	// back area
+	int baLeft = -800; int baTop = -200; int baRight = baLeft + 400; int baBottom = baTop - 250;
+
+	// left arrow - class
+	int lacLeft = 200; int lacTop = 0; int lacRight = lacLeft + 50; int lacBottom = lacTop - 50;
+
+	// right arrow - class
+	int racLeft = 650; int racTop = 0; int racRight = racLeft + 50; int racBottom = racTop - 50;
+
+	// left arrow - level
+	int lalLeft = 200; int lalTop = -200; int lalRight = lalLeft + 50; int lalBottom = lalTop - 50;
+
+	// right arrow - level
+	int ralLeft = 400; int ralTop = -200; int ralRight = ralLeft + 50; int ralBottom = ralTop - 50;
+
+
+	mIsTeamNameClicked = false;
+	mIsMemberNameClicked = false;
+
+	if (CheckPointInRect(mouseX, mouseY, m1Left, m1Top, m1Right, m1Bottom))
+	{
+		// switch to member 1
+		mCreateMemberID = 0;
+	}
+	else if (CheckPointInRect(mouseX, mouseY, m2Left, m2Top, m2Right, m2Bottom))
+	{
+		// switch to member 2
+		mCreateMemberID = 1;
+	}
+	else if (CheckPointInRect(mouseX, mouseY, m3Left, m3Top, m3Right, m3Bottom))
+	{
+		// switch to member 3
+		mCreateMemberID = 2;
+	}
+	else if (CheckPointInRect(mouseX, mouseY, m4Left, m4Top, m4Right, m4Bottom))
+	{
+		// switch to member 4
+		mCreateMemberID = 3;
+	}
+	else if (CheckPointInRect(mouseX, mouseY, tnLeft, tnTop, tnRight, tnBottom))
+	{
+		// team name edit
+		mIsTeamNameClicked = true;
+	}
+	else if (CheckPointInRect(mouseX, mouseY, mnLeft, mnTop, mnRight, mnBottom))
+	{
+		// member name edit
+		mIsMemberNameClicked = true;
+	}
+	else if (CheckPointInRect(mouseX, mouseY, saLeft, saTop, saRight, saBottom))
+	{
+		// do save
+		SaveCreateMenu();
+	}
+	else if (CheckPointInRect(mouseX, mouseY, baLeft, baTop, baRight, baBottom))
+	{
+		mGameState = GAME_MENU_SELECT_XML_STATE;
+	}
+	else if (CheckPointInRect(mouseX, mouseY, lacLeft, lacTop, lacRight, lacBottom))
+	{
+		// left arrow - class
+		int currentClass = mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mClass;
+
+		// hardcoded stuff here, inelegant - should be refactored
+		// highest class is 3, hence the magic number used
+		currentClass--;
+
+		if (currentClass < 0)
+			currentClass = 3;
+
+		mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mClass = (DPhoenix::CharacterClasses)currentClass;
+
+		mCreateMenuTeam->mTeamMembers[mCreateMemberID]->SetBaseStats();
+		mCreateMenuTeam->mTeamMembers[mCreateMemberID]->CalculateStats(
+			mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mLevel
+		);
+	}
+	else if (CheckPointInRect(mouseX, mouseY, racLeft, racTop, racRight, racBottom))
+	{
+		// right arrow - class
+		int currentClass = mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mClass;
+
+		// hardcoded stuff here, inelegant - should be refactored
+		// highest class is 3, hence the magic number used
+		currentClass++;
+
+		if (currentClass > 3)
+			currentClass = 0;
+
+		mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mClass = (DPhoenix::CharacterClasses)currentClass;
+
+		mCreateMenuTeam->mTeamMembers[mCreateMemberID]->SetBaseStats();
+		mCreateMenuTeam->mTeamMembers[mCreateMemberID]->CalculateStats(
+			mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mLevel
+		);
+
+	}
+	else if (CheckPointInRect(mouseX, mouseY, lalLeft, lalTop, lalRight, lalBottom))
+	{
+		// left arrow - level
+		int currentLevel = mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mLevel;
+
+		currentLevel--;
+
+		// hardcoded stuff here, inelegant - should be refactored
+		// level cap is 20, hence the magic number used
+		if (currentLevel < 1)
+			currentLevel = 20;
+
+		mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mLevel = currentLevel;
+		mCreateMenuTeam->mTeamMembers[mCreateMemberID]->CalculateStats(currentLevel);
+
+	}
+	else if (CheckPointInRect(mouseX, mouseY, ralLeft, ralTop, ralRight, ralBottom))
+	{
+		// right arrow - level
+		int currentLevel = mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mLevel;
+
+		currentLevel++;
+
+		// hardcoded stuff here, inelegant - should be refactored
+		// level cap is 20, hence the magic number used
+		if (currentLevel > 20)
+			currentLevel = 1;
+
+		mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mLevel = currentLevel;
+		mCreateMenuTeam->mTeamMembers[mCreateMemberID]->CalculateStats(currentLevel);
+
+	}
+}
+
+void BTLTAIDemo::EditTeamName(DPhoenix::KeyReleaseEvent * key)
+{
+	int input = key->mKeycode; 
+
+//string stream (easy string manipulation)
+std::ostringstream nameStream;
+
+//max name length at 15
+if (mCreateMenuTeam->mTeamName.size() < 15)
+{
+	//stream in current name value
+	nameStream << mCreateMenuTeam->mTeamName;
+
+	//check the input is valid
+	if (CheckInput(input))
+	{
+		//if so, convert to the character and add to stream
+		nameStream << ConvertInput(input);
+		//update name to stream contents
+		mCreateMenuTeam->mTeamName = nameStream.str();
+	}
+}
+
+//check for backspace/left
+if (input == DIK_LEFT || input == DIK_BACK)
+{
+	//as long as characters in name remove last character
+	if (mCreateMenuTeam->mTeamName.size() > 0)
+	{
+		mCreateMenuTeam->mTeamName.pop_back();
+	}
+}
+}
+
+void BTLTAIDemo::EditMemberName(DPhoenix::KeyReleaseEvent * key)
+{
+	int input = key->mKeycode;
+
+	//string stream (easy string manipulation)
+	std::ostringstream nameStream;
+
+	//max name length at 15
+	if (mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mMemberName.size() < 15)
+	{
+		//stream in current name value
+		nameStream << mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mMemberName;
+
+		//check the input is valid
+		if (CheckInput(input))
+		{
+			//if so, convert to the character and add to stream
+			nameStream << ConvertInput(input);
+			//update name to stream contents
+			mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mMemberName = nameStream.str();
+		}
+	}
+
+	//check for backspace/left
+	if (input == DIK_LEFT || input == DIK_BACK)
+	{
+		//as long as characters in name remove last character
+		if (mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mMemberName.size() > 0)
+		{
+			mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mMemberName.pop_back();
+		}
+	}
+}
+
+bool BTLTAIDemo::CheckInput(int input)
+{
+	//helper functions for checking input
+	int arrDIK[37] = { DIK_A, DIK_B, DIK_C, DIK_D, DIK_E,
+		DIK_F, DIK_G, DIK_H, DIK_I, DIK_J, DIK_K, DIK_L,
+		DIK_M, DIK_N, DIK_O, DIK_P, DIK_Q, DIK_R, DIK_S,
+		DIK_T, DIK_U, DIK_V, DIK_W, DIK_X, DIK_Y, DIK_Z,
+		DIK_0, DIK_1, DIK_2, DIK_3, DIK_4, DIK_5, DIK_6,
+		DIK_7, DIK_8, DIK_9, DIK_SPACE };
+
+	for (int i = 0; i < 37; i++)
+	{
+		if (arrDIK[i] == input)
+			return true;
+	}
+	return false;
+
+}
+
+char BTLTAIDemo::ConvertInput(int input)
+{
+	//helper functions for converting keyboard characters
+	int arrDIK[37] = { DIK_A, DIK_B, DIK_C, DIK_D, DIK_E,
+		DIK_F, DIK_G, DIK_H, DIK_I, DIK_J, DIK_K, DIK_L,
+		DIK_M, DIK_N, DIK_O, DIK_P, DIK_Q, DIK_R, DIK_S,
+		DIK_T, DIK_U, DIK_V, DIK_W, DIK_X, DIK_Y, DIK_Z,
+		DIK_0, DIK_1, DIK_2, DIK_3, DIK_4, DIK_5, DIK_6,
+		DIK_7, DIK_8, DIK_9, DIK_SPACE };
+	char arrChars[37] = { 'A', 'B','C','D','E','F', 'G', 'H', 'I', 'J',
+		'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+		'X','Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' '
+	};
+
+	for (int i = 0; i < 37; i++)
+	{
+		if (arrDIK[i] == input)
+		{
+		return arrChars[i]; 
+		}
+	}
+}
+
+// BTLTAIDemo::StartGameFromXML support method --------------------------------------------------------------------------------------------------------------------------------
+//=====================================================================================================================================================================================================================================
+void BTLTAIDemo::StartGameFromXML()
+{
+	// with a little more complex coding you could randomise the enemy picks 
+	// a bit more and have them appear on the menu with atimer
+	// (as per the original code)
+	// but in the interests of speed, we'll do it instantaneously
+	// class will be random but the levels will match
+
+	srand(time(0));
+
+	for (int i = 0; i < 4; i++)
+	{
+		//random number between 0 and 3 to get class
+		int rng = rand() % +4;
+
+		switch (rng)
+		{
+		case 0:
+			mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::TOY_SOLDIER_CLASS,
+				&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
+			break;
+		case 1:
+			mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::DARK_ANGEL_CLASS,
+				&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
+			break;
+		case 2:
+			mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::DRAGON_CLASS,
+				&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
+			break;
+		case 3:
+			mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::BIG_CAT_CLASS,
+				&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
+			break;
+		}
+	}
+
+	DPhoenix::TeamSave* selectedTeam = mTeamLoader->GetTeamAt(mIDTeamSelected);
+
+	mPlayerTeam->mTeamName = selectedTeam->teamName;
+
+	for (int i = 0; i < selectedTeam->characters.size(); i++)
+	{
+		DPhoenix::CharacterClasses charClass;
+
+		if (selectedTeam->characters[i]->characterclass == "TOY SOLDIER")
+		{
+			charClass = DPhoenix::TOY_SOLDIER_CLASS;
+		}
+		else if (selectedTeam->characters[i]->characterclass == "DARK ANGEL")
+		{
+			charClass = DPhoenix::DARK_ANGEL_CLASS;
+		}
+		else if (selectedTeam->characters[i]->characterclass == "DRAGON")
+		{
+			charClass = DPhoenix::DRAGON_CLASS;
+		}
+		else if (selectedTeam->characters[i]->characterclass == "BIG CAT")
+		{
+			charClass = DPhoenix::BIG_CAT_CLASS;
+		}
+
+		mPlayerTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(
+			charClass, &mTexMgr, md3dDevice, &mAudioMgr, mHappyPath
+		));
+
+		// assumption that all indexes line up at this point
+		// otherwise there will be vector subscript errors
+		// could use assert statemnets or other checking
+
+		mPlayerTeam->mTeamMembers[i]->mLevel = selectedTeam->characters[i]->level;
+		mEnemyTeam->mTeamMembers[i]->mLevel = selectedTeam->characters[i]->level;
+
+		mPlayerTeam->mTeamMembers[i]->CalculateStats(selectedTeam->characters[i]->level);
+		mEnemyTeam->mTeamMembers[i]->CalculateStats(selectedTeam->characters[i]->level);
+
+		mPlayerTeam->mTeamMembers[i]->mMemberName = selectedTeam->characters[i]->name;
+	}
+
+	// this is copied from UpdateScene
+	// within the case ENEMY_4_PICKED_MENUSTATE
+
+	mGameState = GAME_PLAY_STATE;
+
+	// adjust the team members with teh positions from teh map loading
+	mPlayerTeam->mTeamMembers[0]->mModelInstance->mPosition = mPlayerSpawnVec[0];
+	mPlayerTeam->mTeamMembers[0]->mModelInstance->mRotation.y = 0;
+	mPlayerTeam->mTeamMembers[1]->mModelInstance->mPosition = mPlayerSpawnVec[1];
+	mPlayerTeam->mTeamMembers[1]->mModelInstance->mRotation.y = 0;
+	mPlayerTeam->mTeamMembers[2]->mModelInstance->mPosition = mPlayerSpawnVec[2];
+	mPlayerTeam->mTeamMembers[2]->mModelInstance->mRotation.y = 0;
+	mPlayerTeam->mTeamMembers[3]->mModelInstance->mPosition = mPlayerSpawnVec[3];
+	mPlayerTeam->mTeamMembers[3]->mModelInstance->mRotation.y = 0;
+
+	// set as player team, calculate TP and rest turn
+	mPlayerTeam->mTeamType = DPhoenix::PLAYER_TEAM;
+	mPlayerTeam->CalculateTPPool();
+	mPlayerTeam->ResetTeamTurn();
+	mPlayerTeam->mStatustext = "Some test text for status bar";
+
+
+	//initial camera position --------------------------------------------------
+	float zBase = sin(XMConvertToRadians(mCamToFocusAngle));
+	float xBase = cos(XMConvertToRadians(mCamToFocusAngle));
+	mCamera->mPosition.x = mPlayerTeam->mTeamMembers[mPlayerTeam->mCurrentMember]->mModelInstance->mPosition.x - (xBase * mCameraDistanceOffset);
+	mCamera->mPosition.y = mPlayerTeam->mTeamMembers[mPlayerTeam->mCurrentMember]->mModelInstance->mPosition.y + mCameraDistanceOffset;
+	mCamera->mPosition.z = mPlayerTeam->mTeamMembers[mPlayerTeam->mCurrentMember]->mModelInstance->mPosition.z - (zBase * mCameraDistanceOffset);
+	mCamera->mGoalPosition = mCamera->mPosition;
+
+	mCamera->mTargetPos = mPlayerTeam->mTeamMembers[mPlayerTeam->mCurrentMember]->mModelInstance->mPosition;
+	mCamera->mGoalTarget = mPlayerTeam->mTeamMembers[mPlayerTeam->mCurrentMember]->mModelInstance->mPosition;
+
+	//need initial line object an first piece of happy path --------------------------
+	mCameraLine = new::DPhoenix::Line();
+	AddEntity(mCameraLine);
+
+	// start happy path from first player's position
+	mHappyPath.push_back(new DPhoenix::PrimitiveInstance(*mSelectionHighlight));
+	mHappyPath.back()->mPosition = mPlayerTeam->mTeamMembers[mPlayerTeam->mCurrentMember]->mModelInstance->mPosition;
+	mHappyPath.back()->mPosition.y = 10.5f;
+	mHappyPath.back()->mOpacity = 0.75f;
+	CheckSelectableRoute();
+
+	// initialise enmy positions from the map loading
+	mEnemyTeam->mTeamMembers[0]->mModelInstance->mPosition = mEnemySpawnVec[0];
+	mEnemyTeam->mTeamMembers[0]->mModelInstance->mRotation.y = 0;
+	mEnemyTeam->mTeamMembers[1]->mModelInstance->mPosition = mEnemySpawnVec[1];
+	mEnemyTeam->mTeamMembers[1]->mModelInstance->mRotation.y = 0;
+	mEnemyTeam->mTeamMembers[2]->mModelInstance->mPosition = mEnemySpawnVec[2];
+	mEnemyTeam->mTeamMembers[2]->mModelInstance->mRotation.y = 0;
+	mEnemyTeam->mTeamMembers[3]->mModelInstance->mPosition = mEnemySpawnVec[3];
+	mEnemyTeam->mTeamMembers[3]->mModelInstance->mRotation.y = 0;
+
+	mEnemyTeam->mTeamType = DPhoenix::ENEMY_TEAM;
+	mEnemyTeam->CalculateTPPool();
+	mEnemyTeam->ResetTeamTurn();
+	mEnemyTeam->DetermineAIStatus(mMap, mBeacons);
+
+	// update lighting
+	mDirLights[0]->Direction = XMFLOAT3(0.0f, -1.0f, 0.0f);
+
+	//add players / enemies to entities
+	for (int i = 0; i < mPlayerTeam->mTeamMembers.size(); i++)
+	{
+		mPlayerTeam->mTeamMembers[i]->mModelInstance->mEntityType = DPhoenix::ENTITY_PLAYER_MESH;
+		mPlayerTeam->mTeamMembers[i]->mModelInstance->mCollidable = true;
+		AddEntity(mPlayerTeam->mTeamMembers[i]->mModelInstance);
+	}
+
+	for (int i = 0; i < mEnemyTeam->mTeamMembers.size(); i++)
+	{
+		mEnemyTeam->mTeamMembers[i]->mModelInstance->mEntityType = DPhoenix::ENTITY_ENEMY_MESH;
+		mEnemyTeam->mTeamMembers[i]->mModelInstance->mCollidable = true;
+		AddEntity(mEnemyTeam->mTeamMembers[i]->mModelInstance);
+	}
+
+}
+
+void BTLTAIDemo::SaveCreateMenu()
+{
+	DPhoenix::TeamSave* newTeam = new DPhoenix::TeamSave(); 
+
+	newTeam->teamName = mCreateMenuTeam->mTeamName; 
+	const int TEAM_SIZE = 4; 
+
+	//set vector size before input
+	newTeam->characters.resize(TEAM_SIZE); 
+
+	//no error checking here for input so just relying on user to input ints where necessary, could be added
+	for (int i = 0; i < TEAM_SIZE; i++)
+	{
+		newTeam->characters[i] = new DPhoenix::CharSave(); 
+
+		newTeam->characters[i]->name = mCreateMenuTeam->mTeamMembers[i]->mMemberName; 
+
+		switch (mCreateMenuTeam->mTeamMembers[i]->mClass)
+		{
+		case DPhoenix::TOY_SOLDIER_CLASS:
+			newTeam->characters[i]->characterclass = "TOY SOLDIER"; 
+			break; 
+		case DPhoenix::DARK_ANGEL_CLASS:
+			newTeam->characters[i]->characterclass = "DARK ANGEL";
+			break;
+		case DPhoenix::DRAGON_CLASS:
+			newTeam->characters[i]->characterclass = "DRAGON";
+			break;
+		case DPhoenix::BIG_CAT_CLASS:
+			newTeam->characters[i]->characterclass = "BIG CAT";
+			break;
+		}
+
+		newTeam->characters[i]->name = mCreateMenuTeam->mTeamMembers[i]->mMemberName; 
+
+		newTeam->characters[i]->level = mCreateMenuTeam->mTeamMembers[i]->mLevel; 
+		newTeam->characters[i]->xp = 0; 
+	}
+	//now save character
+	mTeamLoader->Create(newTeam); 
+
+	mGameState = GAME_MENU_SELECT_XML_STATE; 
+	mIsXMLMenuTeamSelected = true; 
+
+	mIDTeamSelected = mTeamLoader->GetTeams().size() - 1; 
+}
+
+void BTLTAIDemo::InitCreateMenu() 
+{
+	mCreateMenuTeam = new DPhoenix::Team(); 
+	mCreateMenuTeam->mTeamName = "CLICK TO EDIT"; 
+
+	mCreateMenuTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::TOY_SOLDIER_CLASS,
+		&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
+	mCreateMenuTeam->mTeamMembers.back()->mMemberName = "MEMBER 1"; 
+
+	mCreateMenuTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::TOY_SOLDIER_CLASS,
+		&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
+	mCreateMenuTeam->mTeamMembers.back()->mMemberName = "MEMBER 2";
+
+	mCreateMenuTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::TOY_SOLDIER_CLASS,
+		&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
+	mCreateMenuTeam->mTeamMembers.back()->mMemberName = "MEMBER 3";
+
+	mCreateMenuTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::TOY_SOLDIER_CLASS,
+		&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
+	mCreateMenuTeam->mTeamMembers.back()->mMemberName = "MEMBER 4";
+
+	mCreateMemberID = 0;
 }
 
 void BTLTAIDemo::CheckMouseClickRoute()
@@ -2365,6 +3201,12 @@ void BTLTAIDemo::DrawScene()
 	case GAME_TITLE_STATE:
 		RenderSprite(mTitleScreen, activeSpriteTech, true);
 		break;
+	case GAME_MENU_SELECT_XML_STATE:
+		RenderSprite(mSelectTeamXMLBG, activeSpriteTech, true); 
+		break;
+	case GAME_MENU_CREATE_XML_STATE: 
+		RenderSprite(mCreateTeamXMLBG, activeSpriteTech, true);
+		break; 
 	case GAME_MENU_STATE:
 		RenderSprite(mTeamMenuScreen, activeSpriteTech, true);
 		break;
@@ -2724,6 +3566,21 @@ void BTLTAIDemo::DrawScene()
 	case GAME_MENU_STATE:
 		RenderSprite(mSelectedClassMenu, activeSpriteTech, true);
 		break;
+	case GAME_MENU_SELECT_XML_STATE:
+		RenderSprite(mHoverCreateNew, activeSpriteTech, true);
+		RenderSprite(mHoverDelete, activeSpriteTech, true);
+		RenderSprite(mHoverStart, activeSpriteTech, true);
+		break; 
+	case GAME_MENU_CREATE_XML_STATE:
+		RenderSprite(mHoverTeamMember1, activeSpriteTech, true);
+		RenderSprite(mHoverTeamMember2, activeSpriteTech, true);
+		RenderSprite(mHoverTeamMember3, activeSpriteTech, true);
+		RenderSprite(mHoverTeamMember4, activeSpriteTech, true);
+		RenderSprite(mHoverTeamName, activeSpriteTech, true);
+		RenderSprite(mHoverMemberName, activeSpriteTech, true);
+		RenderSprite(mHoverSave, activeSpriteTech, true);
+		RenderSprite(mHoverBack, activeSpriteTech, true);
+		break;
 	case GAME_PLAY_STATE:
 
 #pragma region UIAreas
@@ -2924,10 +3781,10 @@ void BTLTAIDemo::DrawScene()
 	//string stream object for getting all text to display
 	std::ostringstream debugText;
 
-	debugText << "Debug text:" << std::endl;
-	debugText << "att2:" << att2 << std::endl;
-	debugText << "att3:" << att3 << std::endl;
-	debugText << "att1:" << att1 << std::endl;
+	//debugText << "Debug text:" << std::endl;
+	//debugText << "att2:" << att2 << std::endl;
+	//debugText << "att3:" << att3 << std::endl;
+	//debugText << "att1:" << att1 << std::endl;
 
 
 	//calculate screen scaling
@@ -2947,6 +3804,47 @@ void BTLTAIDemo::DrawScene()
 	std::ostringstream daText;
 	std::ostringstream dText;
 	std::ostringstream bcText;
+	//stringstreams for select menu -----------------------------------------
+	std::ostringstream teamNameText;
+	std::ostringstream member1Text;
+	std::ostringstream member2Text;
+	std::ostringstream member3Text;
+	std::ostringstream member4Text;
+	std::ostringstream enemyTeamText;
+	std::ostringstream createNewText;
+	std::ostringstream deleteText;
+	std::ostringstream startText;
+
+	//stringstreams for create menu -----------------------------------------
+	std::ostringstream teamNameLabelText;
+	std::ostringstream teamNameEditableText;
+
+	std::ostringstream member1NameText;
+	std::ostringstream member1ClassText;
+	std::ostringstream member1LevelText;
+
+	std::ostringstream member2NameText;
+	std::ostringstream member2ClassText;
+	std::ostringstream member2LevelText;
+
+	std::ostringstream member3NameText;
+	std::ostringstream member3ClassText;
+	std::ostringstream member3LevelText;
+
+	std::ostringstream member4NameText;
+	std::ostringstream member4ClassText;
+	std::ostringstream member4LevelText;
+
+	std::ostringstream memberEditTeamHeaderText;
+	std::ostringstream nameEditLabel;
+	std::ostringstream nameEditText;
+	std::ostringstream memberEditClassText;
+	std::ostringstream memberEditLevelText;
+	std::ostringstream memberEditStatsText;
+
+	std::ostringstream createOptionsText;
+
+	
 	//for gameplay UI -------------------------------------------------------
 	std::ostringstream statusText;
 	std::ostringstream statsText;
@@ -3279,6 +4177,448 @@ void BTLTAIDemo::DrawScene()
 #pragma endregion BigCatStats
 
 		break;
+
+	case GAME_MENU_SELECT_XML_STATE:
+		if (!mIsXMLMenuTeamSelected)
+		{
+			teamNameText << "No Teams Loaded" << std::endl; 
+		}
+		else
+		{
+			teamNameText << mTeamLoader->GetTeamAt(mIDTeamSelected)->teamName << std::endl; 
+		}
+
+		mUIFont60pt->DrawFont(m2D1RT, teamNameText.str(), 200.0f, 250.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f)); 
+
+#pragma region Member1
+		if (mIsXMLMenuTeamSelected)
+		{
+
+			//NAME
+			member1Text << "Name: " << mTeamLoader->GetTeamAt(mIDTeamSelected)->characters[0]->name << std::endl; 
+		
+			mUIFont30pt->DrawFont(m2D1RT, member1Text.str(), 200.0f,400.0f,
+				1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+			member1Text.clear(); 
+			member1Text.str("");
+
+			//CLASS
+			member1Text << "Class: " << mTeamLoader->GetTeamAt(mIDTeamSelected)->characters[0]->characterclass << std::endl;
+
+			mUIFont30pt->DrawFont(m2D1RT, member1Text.str(), 200.0f, 450.0f,
+				1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+			member1Text.clear();
+			member1Text.str("");
+
+			//LEVEL
+			member1Text << "Level: " << mTeamLoader->GetTeamAt(mIDTeamSelected)->characters[0]->level << std::endl;
+
+			mUIFont30pt->DrawFont(m2D1RT, member1Text.str(), 200.0f, 500.0f,
+				1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+			member1Text.clear();
+			member1Text.str("");
+		}
+
+#pragma endregion Member1
+
+#pragma region Member2
+		if (mIsXMLMenuTeamSelected)
+		{
+
+			//NAME
+			member2Text << "Name: " << mTeamLoader->GetTeamAt(mIDTeamSelected)->characters[1]->name << std::endl;
+
+			mUIFont30pt->DrawFont(m2D1RT, member2Text.str(), 500.0f, 400.0f,
+				1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+			member2Text.clear();
+			member2Text.str("");
+
+			//CLASS
+			member2Text << "Class: " << mTeamLoader->GetTeamAt(mIDTeamSelected)->characters[1]->characterclass << std::endl;
+
+			mUIFont30pt->DrawFont(m2D1RT, member2Text.str(), 500.0f, 450.0f,
+				1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+			member2Text.clear();
+			member2Text.str("");
+
+			//LEVEL
+			member2Text << "Level: " << mTeamLoader->GetTeamAt(mIDTeamSelected)->characters[1]->level << std::endl;
+
+			mUIFont30pt->DrawFont(m2D1RT, member2Text.str(), 500.0f, 500.0f,
+				1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+			member2Text.clear();
+			member2Text.str("");
+		}
+
+#pragma endregion Member2
+
+#pragma region Member3
+		if (mIsXMLMenuTeamSelected)
+		{
+
+			//NAME
+			member3Text << "Name: " << mTeamLoader->GetTeamAt(mIDTeamSelected)->characters[2]->name << std::endl;
+
+			mUIFont30pt->DrawFont(m2D1RT, member3Text.str(), 800.0f, 400.0f,
+				1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+			member3Text.clear();
+			member3Text.str("");
+
+			//CLASS
+			member3Text << "Class: " << mTeamLoader->GetTeamAt(mIDTeamSelected)->characters[2]->characterclass << std::endl;
+
+			mUIFont30pt->DrawFont(m2D1RT, member3Text.str(), 800.0f, 450.0f,
+				1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+			member3Text.clear();
+			member3Text.str("");
+
+			//LEVEL
+			member3Text << "Level: " << mTeamLoader->GetTeamAt(mIDTeamSelected)->characters[2]->level << std::endl;
+
+			mUIFont30pt->DrawFont(m2D1RT, member3Text.str(), 800.0f, 500.0f,
+				1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+			member3Text.clear();
+			member3Text.str("");
+		}
+
+#pragma endregion Member3
+
+#pragma region Member4
+		if (mIsXMLMenuTeamSelected)
+		{
+
+			//NAME
+			member4Text << "Name: " << mTeamLoader->GetTeamAt(mIDTeamSelected)->characters[3]->name << std::endl;
+
+			mUIFont30pt->DrawFont(m2D1RT, member4Text.str(), 1100.0f, 400.0f,
+				1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+			member4Text.clear();
+			member4Text.str("");
+
+			//CLASS
+			member4Text << "Class: " << mTeamLoader->GetTeamAt(mIDTeamSelected)->characters[3]->characterclass << std::endl;
+
+			mUIFont30pt->DrawFont(m2D1RT, member4Text.str(), 1100.0f, 450.0f,
+				1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+			member4Text.clear();
+			member4Text.str("");
+
+			//LEVEL
+			member4Text << "Level: " << mTeamLoader->GetTeamAt(mIDTeamSelected)->characters[3]->level << std::endl;
+
+			mUIFont30pt->DrawFont(m2D1RT, member4Text.str(), 1100.0f, 500.0f,
+				1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+			member4Text.clear();
+			member4Text.str("");
+		}
+
+#pragma endregion Member4
+
+#pragma region EnemyTeam
+
+#pragma region SelectMenuOptions
+
+		createNewText << "CREATE NEW TEAM" << std::endl; 
+
+		mUIFont60pt->DrawFont(m2D1RT, createNewText.str(), 100.0f, 750.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		if (mIsXMLMenuTeamSelected)
+		{
+			deleteText << "DELETE" << std::endl; 
+
+			mUIFont60pt->DrawFont(m2D1RT, deleteText.str(), 900.0f, 750.0f,
+				1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+			startText << "START" << std::endl;
+
+			mUIFont60pt->DrawFont(m2D1RT, startText.str(), 1300.0f, 750.0f,
+				1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+		}
+#pragma endregion SelectMenuOptions
+
+		break; 
+
+		// case GAME_MENU_CREATE_XML_STATE label code for RenderFonts region --------------------------------------------------------------------------------------------------------------------------------
+		//=====================================================================================================================================================================================================================================
+
+	case GAME_MENU_CREATE_XML_STATE:
+
+#pragma region TeamName
+
+		teamNameLabelText << "TEAM NAME:" << std::endl;
+
+		mUIFont60pt->DrawFont(m2D1RT, teamNameLabelText.str(), 50.0f, 150.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		teamNameEditableText << mCreateMenuTeam->mTeamName << std::endl;
+
+		mUIFont60pt->DrawFont(m2D1RT, teamNameEditableText.str(), 450.0f, 150.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+#pragma endregion TeamName
+
+#pragma region Member1
+
+		member1NameText << "NAME: " << mCreateMenuTeam->mTeamMembers[0]->mMemberName << std::endl;
+
+		mUIFont30pt->DrawFont(m2D1RT, member1NameText.str(), 100.0f, 250.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		member1ClassText << "CLASS: ";
+
+		switch (mCreateMenuTeam->mTeamMembers[0]->mClass)
+		{
+		case DPhoenix::TOY_SOLDIER_CLASS:
+			member1ClassText << "TOY SOLDIER" << std::endl;
+			break;
+		case DPhoenix::DARK_ANGEL_CLASS:
+			member1ClassText << "DARK ANGEL" << std::endl;
+			break;
+		case DPhoenix::DRAGON_CLASS:
+			member1ClassText << "DRAGON" << std::endl;
+			break;
+		case DPhoenix::BIG_CAT_CLASS:
+			member1ClassText << "BIG CAT" << std::endl;
+			break;
+		}
+
+		mUIFont30pt->DrawFont(m2D1RT, member1ClassText.str(), 400.0f, 250.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		member1LevelText << "LEVEL: " << mCreateMenuTeam->mTeamMembers[0]->mLevel << std::endl;
+
+		mUIFont30pt->DrawFont(m2D1RT, member1LevelText.str(), 750.0f, 250.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+#pragma endregion Member1
+
+#pragma region Member2
+
+		member2NameText << "NAME: " << mCreateMenuTeam->mTeamMembers[1]->mMemberName << std::endl;
+
+		mUIFont30pt->DrawFont(m2D1RT, member2NameText.str(), 100.0f, 350.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		member2ClassText << "CLASS: ";
+
+		switch (mCreateMenuTeam->mTeamMembers[1]->mClass)
+		{
+		case DPhoenix::TOY_SOLDIER_CLASS:
+			member2ClassText << "TOY SOLDIER" << std::endl;
+			break;
+		case DPhoenix::DARK_ANGEL_CLASS:
+			member2ClassText << "DARK ANGEL" << std::endl;
+			break;
+		case DPhoenix::DRAGON_CLASS:
+			member2ClassText << "DRAGON" << std::endl;
+			break;
+		case DPhoenix::BIG_CAT_CLASS:
+			member2ClassText << "BIG CAT" << std::endl;
+			break;
+		}
+
+		mUIFont30pt->DrawFont(m2D1RT, member2ClassText.str(), 400.0f, 350.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		member2LevelText << "LEVEL: " << mCreateMenuTeam->mTeamMembers[1]->mLevel << std::endl;
+
+		mUIFont30pt->DrawFont(m2D1RT, member2LevelText.str(), 750.0f, 350.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+
+#pragma endregion Member2
+
+#pragma region Member3
+
+		member3NameText << "NAME: " << mCreateMenuTeam->mTeamMembers[2]->mMemberName << std::endl;
+
+		mUIFont30pt->DrawFont(m2D1RT, member3NameText.str(), 100.0f, 450.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		member3ClassText << "CLASS: ";
+
+		switch (mCreateMenuTeam->mTeamMembers[2]->mClass)
+		{
+		case DPhoenix::TOY_SOLDIER_CLASS:
+			member3ClassText << "TOY SOLDIER" << std::endl;
+			break;
+		case DPhoenix::DARK_ANGEL_CLASS:
+			member3ClassText << "DARK ANGEL" << std::endl;
+			break;
+		case DPhoenix::DRAGON_CLASS:
+			member3ClassText << "DRAGON" << std::endl;
+			break;
+		case DPhoenix::BIG_CAT_CLASS:
+			member3ClassText << "BIG CAT" << std::endl;
+			break;
+		}
+
+		mUIFont30pt->DrawFont(m2D1RT, member3ClassText.str(), 400.0f, 450.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		member3LevelText << "LEVEL: " << mCreateMenuTeam->mTeamMembers[2]->mLevel << std::endl;
+
+		mUIFont30pt->DrawFont(m2D1RT, member3LevelText.str(), 750.0f, 450.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+
+#pragma endregion Member3
+
+#pragma region Member4
+
+		member4NameText << "NAME: " << mCreateMenuTeam->mTeamMembers[3]->mMemberName << std::endl;
+
+		mUIFont30pt->DrawFont(m2D1RT, member4NameText.str(), 100.0f, 550.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		member4ClassText << "CLASS: ";
+
+		switch (mCreateMenuTeam->mTeamMembers[3]->mClass)
+		{
+		case DPhoenix::TOY_SOLDIER_CLASS:
+			member4ClassText << "TOY SOLDIER" << std::endl;
+			break;
+		case DPhoenix::DARK_ANGEL_CLASS:
+			member4ClassText << "DARK ANGEL" << std::endl;
+			break;
+		case DPhoenix::DRAGON_CLASS:
+			member4ClassText << "DRAGON" << std::endl;
+			break;
+		case DPhoenix::BIG_CAT_CLASS:
+			member4ClassText << "BIG CAT" << std::endl;
+			break;
+		}
+
+		mUIFont30pt->DrawFont(m2D1RT, member4ClassText.str(), 400.0f, 550.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		member4LevelText << "LEVEL: " << mCreateMenuTeam->mTeamMembers[3]->mLevel << std::endl;
+
+		mUIFont30pt->DrawFont(m2D1RT, member4LevelText.str(), 750.0f, 550.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+#pragma endregion Member4
+
+#pragma region EditArea
+
+		memberEditTeamHeaderText << "TEAM MEMBER" << std::endl;
+
+		mUIFont60pt->DrawFont(m2D1RT, memberEditTeamHeaderText.str(), 1050.0f, 150.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		// name edit
+
+		nameEditLabel << "NAME: " << std::endl;
+
+		mUIFont48pt->DrawFont(m2D1RT, nameEditLabel.str(), 1000.0f, 250.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		nameEditText << mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mMemberName << std::endl;
+
+		mUIFont48pt->DrawFont(m2D1RT, nameEditText.str(), 1150.0f, 250.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+
+		// class editing
+
+		memberEditClassText << "CLASS: " << std::endl;
+
+		mUIFont48pt->DrawFont(m2D1RT, memberEditClassText.str(), 1000.0f, 350.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		memberEditClassText.clear(); memberEditClassText.str("");
+
+		switch (mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mClass)
+		{
+		case DPhoenix::TOY_SOLDIER_CLASS:
+			memberEditClassText << "TOY SOLDIER" << std::endl;
+			break;
+		case DPhoenix::DARK_ANGEL_CLASS:
+			memberEditClassText << "DARK ANGEL" << std::endl;
+			break;
+		case DPhoenix::DRAGON_CLASS:
+			memberEditClassText << "DRAGON" << std::endl;
+			break;
+		case DPhoenix::BIG_CAT_CLASS:
+			memberEditClassText << "BIG CAT" << std::endl;
+			break;
+		}
+
+		mUIFont48pt->DrawFont(m2D1RT, memberEditClassText.str(), 1100.0f, 450.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		// level editing
+
+		memberEditLevelText << "LEVEL: " << std::endl;
+
+		mUIFont48pt->DrawFont(m2D1RT, memberEditLevelText.str(), 1000.0f, 550.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		memberEditLevelText.clear(); memberEditLevelText.str("");
+
+		memberEditLevelText << mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mLevel << std::endl;
+
+		mUIFont48pt->DrawFont(m2D1RT, memberEditLevelText.str(), 1100.0f, 650.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		// stats display
+
+		memberEditStatsText << "STATS: " << std::endl;
+
+		mUIFont48pt->DrawFont(m2D1RT, memberEditStatsText.str(), 1300.0f, 550.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		memberEditStatsText.clear(); memberEditStatsText.str("");
+
+		memberEditStatsText << mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mTP << std::endl;
+		memberEditStatsText << mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mHP << std::endl;
+		memberEditStatsText << mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mMP << std::endl;
+		memberEditStatsText << mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mPower << std::endl;
+		memberEditStatsText << mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mFirepower << std::endl;
+		memberEditStatsText << mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mDefense << std::endl;
+		memberEditStatsText << mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mAccuracy << std::endl;
+		memberEditStatsText << mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mEvasion << std::endl;
+		memberEditStatsText << mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mMagic << std::endl;
+		memberEditStatsText << mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mCharm << std::endl;
+
+		mUIFont16pt->DrawFont(m2D1RT, memberEditStatsText.str(), 1450.0f, 650.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+#pragma endregion EditArea
+
+#pragma region Options
+
+		createOptionsText << "GO BACK" << std::endl;
+
+		mUIFont60pt->DrawFont(m2D1RT, createOptionsText.str(), 100.0f, 750.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+		createOptionsText.clear(); createOptionsText.str("");
+
+		createOptionsText << "SAVE" << std::endl;
+
+		mUIFont60pt->DrawFont(m2D1RT, createOptionsText.str(), 600.0f, 750.0f,
+			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
+
+#pragma endregion Options
+
+		break;
+
+
 	case GAME_PLAY_STATE:
 
 #pragma region PlayerStats
@@ -3531,8 +4871,61 @@ void BTLTAIDemo::DrawScene()
 			break;
 	}
 
+#pragma region XMLNames
 
+	//reusing the same stringstream for ease
+	dmgText.clear(); dmgText.str(""); 
 
+	dmgText << mPlayerTeam->mTeamName; 
+
+	mUIFont30pt->DrawFont(m2D1RT, dmgText.str(), 50.0f, 800.0f,
+		1.0f, 1.0f, D2D1::ColorF(0xFFCCFF, 1.0f));
+
+	for (int i = 0; i < mPlayerTeam->mTeamMembers.size(); i++)
+	{
+		if (mPlayerTeam->mTeamMembers[i]->mLifeState != DPhoenix::CH_DEAD_LIFESTATE)
+		{
+			//names only show if cam looking at each other 
+			//get direction vector from pos of player to the cam
+			//then do dot product with cam forward vector
+
+			//direction from chara to cam
+			XMVECTOR characterPosVec = XMLoadFloat3(&(mPlayerTeam->mTeamMembers[i]->mModelInstance->mPosition));
+			XMVECTOR cameraPosVec = XMLoadFloat3(&mCamera->mPosition); 
+
+			XMVECTOR pointAtCameraVec = XMVectorSubtract(cameraPosVec, characterPosVec); 
+			pointAtCameraVec = XMVector3Normalize(pointAtCameraVec); 
+
+			//forward / look at vec for cam
+
+			XMVECTOR targetPosVec = XMLoadFloat3(&mCamera->mTargetPos); 
+
+			XMVECTOR pointAtTargetVec = XMVectorSubtract(targetPosVec, cameraPosVec);
+			pointAtTargetVec = XMVector3Normalize(pointAtTargetVec); 
+
+			XMVECTOR dotProduct = XMVector3Dot(pointAtCameraVec, pointAtTargetVec); 
+
+			//the dot product result is stored as a float for each 'dimention' of vec
+			XMFLOAT3 dotProductResult; 
+			XMStoreFloat3(&dotProductResult, dotProduct); 
+
+			//if facing each other then display (this will be negative num)
+			if (dotProductResult.x < 0)
+			{
+				//reuse stringstream
+				dmgText.clear(); dmgText.str(""); 
+
+				dmgText << mPlayerTeam->mTeamMembers[i]->mMemberName; 
+
+				XMFLOAT2 namePos2d = Convert3Dto2DPoint(mPlayerTeam->mTeamMembers[i]->mModelInstance->mPosition);
+			
+				mUIFont16pt->DrawFont(m2D1RT, dmgText.str(), namePos2d.x, namePos2d.y,
+					1.0f, 1.0f, D2D1::ColorF(0xFFCCFF, 1.0f));
+			}
+		}
+	}
+
+#pragma endregion XMLNames
 
 #pragma endregion RenderFonts
 
@@ -3597,7 +4990,7 @@ void BTLTAIDemo::HandleEvents(DPhoenix::IEvent* e)
 
 		case DIK_UP:
 		case DIK_W:
-			if (mKeyPressTmer.TotalTime() > 0.1)
+			if (mKeyPressTmer.TotalTime() > 0.1 && mGameState == GAME_PLAY_STATE)
 			{
 				if (mCurrentTeam == DPhoenix::PLAYER_TEAM)
 				{
@@ -3614,7 +5007,7 @@ void BTLTAIDemo::HandleEvents(DPhoenix::IEvent* e)
 			break;
 		case DIK_DOWN:
 		case DIK_S:
-			if (mKeyPressTmer.TotalTime() > 0.1)
+			if (mKeyPressTmer.TotalTime() > 0.1 && mGameState == GAME_PLAY_STATE)
 			{
 				if (mCurrentTeam == DPhoenix::PLAYER_TEAM)
 				{
@@ -3653,7 +5046,7 @@ void BTLTAIDemo::HandleEvents(DPhoenix::IEvent* e)
 			{
 				if (mGameState == GAME_TITLE_STATE)
 				{
-					mGameState = GAME_MENU_STATE;
+					mGameState = GAME_MENU_SELECT_XML_STATE;
 
 					mAudioMgr.GetSound("Titlescreen")->Stop();
 					mAudioMgr.GetSound("Titlescreen")->SetPosition(0);
@@ -3709,6 +5102,19 @@ void BTLTAIDemo::HandleEvents(DPhoenix::IEvent* e)
 			mCameraBehindFlag = false;
 			break;
 		}
+
+		if (mGameState == GAME_MENU_CREATE_XML_STATE)
+		{
+			if (mIsTeamNameClicked)
+			{
+				EditTeamName(kre); 
+			}
+
+			if (mIsMemberNameClicked)
+			{
+				EditMemberName(kre);
+			}
+		}
 	}
 	break;
 	case DPhoenix::EVENT_MOUSEMOTION:
@@ -3731,6 +5137,12 @@ void BTLTAIDemo::HandleEvents(DPhoenix::IEvent* e)
 			if (mMenuState == CHOOSE_MENUSTATE)
 				CheckMouseHoverMenu();
 			break;
+		case GAME_MENU_SELECT_XML_STATE: 
+			CheckMouseHoverSelectXMLMenu(); 
+			break;
+		case GAME_MENU_CREATE_XML_STATE:
+			CheckMouseHoverCreateXMLMenu();
+			break;
 		case GAME_PLAY_STATE:
 			if (mCurrentTeam == DPhoenix::PLAYER_TEAM)
 			{
@@ -3752,6 +5164,14 @@ void BTLTAIDemo::HandleEvents(DPhoenix::IEvent* e)
 			case GAME_MENU_STATE:
 				if (mc->mButton == 0 && mMenuState == CHOOSE_MENUSTATE)
 					CheckMouseClickMenu();
+				break;
+			case GAME_MENU_SELECT_XML_STATE:
+				if (mc->mButton == 0)
+					CheckMouseClickSelectXMLMenu(); 
+				break; 
+			case GAME_MENU_CREATE_XML_STATE:
+				if (mc->mButton == 0)
+					CheckMouseClickCreateXMLMenu();
 				break;
 			case GAME_PLAY_STATE:
 				if (mc->mButton == 0)

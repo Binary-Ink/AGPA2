@@ -1445,7 +1445,7 @@ void DPhoenix::Team::DetermineAction(BTLTMap * map, std::vector<Beacon*>& beacon
 			targetPos = opposingteam->mTeamMembers[3]->mModelInstance->mPosition;
 		}
 
-		//excellent, we have our target
+		//exlent, we have our target
 
 		//FIRST OFF, IF WE ARE NExt TO IT, THEn WE MELEE ATTACK!!!!!
 		if ((targetRow == currentPosRow && abs(targetCol - currentPosCol) == 1) ||

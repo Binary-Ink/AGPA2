@@ -198,7 +198,7 @@
 //		ID3DX11EffectTechnique * tech);
 //
 //	//new method / render static mesh with subsets
-//	void BTLTSMapDemo::RenderBasicModel(DPhoenix::BasicModelInstance * model,
+//	void BTLTSMapDemo::RenderBasiodel(DPhoenix::BasicModelInstance * model,
 //		ID3DX11EffectTechnique * tech);
 //
 //	//new method / render static mesh with subsets

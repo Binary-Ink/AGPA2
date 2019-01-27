@@ -29,6 +29,9 @@ namespace DPhoenix
 		public:
 			
 			//member vars -------------------------------------
+
+			std::string mTeamName;
+
 			std::vector<CharacterClass*> mTeamMembers;
 			int mTPPool;
 			int mMaxTPPool;

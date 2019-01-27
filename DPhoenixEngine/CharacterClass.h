@@ -85,6 +85,8 @@ namespace DPhoenix
 		public:
 			//member vars --------------------------------------------
 
+			std::string mMemberName; 
+
 			//stats --------------------------------------------------
 			int mLevel;
 			int mBaseExp, mExp;

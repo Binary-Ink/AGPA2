@@ -132,6 +132,12 @@
     <ClInclude Include="Beacon.h">
       <Filter>Header Files\BTLT</Filter>
     </ClInclude>
+    <ClInclude Include="TeamLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameTimer.cpp">
@@ -316,6 +322,12 @@
     </ClCompile>
     <ClCompile Include="BTLT6AI.cpp">
       <Filter>Source Files\Demos\BTLT</Filter>
+    </ClCompile>
+    <ClCompile Include="TeamLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml2.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
