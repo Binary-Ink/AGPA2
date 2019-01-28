@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<memorycard>
+    <save>
+        <teamname>YAYYYYYYYY</teamname>
+        <character>
+            <name>MEMBER 1</name>
+            <class>TOY SOLDIER</class>
+            <level>8</level>
+            <xp>0</xp>
+        </character>
+        <character>
+            <name>MEMBER 2</name>
+            <class>BIG CAT</class>
+            <level>1</level>
+            <xp>0</xp>
+        </character>
+        <character>
+            <name>MEMBER 3</name>
+            <class>DRAGON</class>
+            <level>1</level>
+            <xp>0</xp>
+        </character>
+        <character>
+            <name>MEMBER 4</name>
+            <class>DARK ANGEL</class>
+            <level>1</level>
+            <xp>0</xp>
+        </character>
+    </save>
+    <save>
+        <teamname>TESTTEAM</teamname>
+        <character>
+            <name>TEST1</name>
+            <class>TOY SOLDIER</class>
+            <level>1</level>
+            <xp>0</xp>
+        </character>
+        <character>
+            <name>TEST 2</name>
+            <class>DARK ANGEL</class>
+            <level>1</level>
+            <xp>0</xp>
+        </character>
+        <character>
+            <name>TEST 3</name>
+            <class>DRAGON</class>
+            <level>1</level>
+            <xp>0</xp>
+        </character>
+        <character>
+            <name>TEST 4</name>
+            <class>TOY SOLDIER</class>
+            <level>1</level>
+            <xp>0</xp>
+        </character>
+    </save>
+</memorycard>
