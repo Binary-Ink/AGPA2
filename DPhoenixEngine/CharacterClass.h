@@ -7,10 +7,10 @@ namespace DPhoenix
 	//available actions, battle calculations etc.
 	enum CharacterClasses
 	{
-		TOY_SOLDIER_CLASS,
-		DARK_ANGEL_CLASS,
-		DRAGON_CLASS,
-		BIG_CAT_CLASS
+		SOLDIER_CLASS,
+		MAGE_CLASS,
+		DWARF_CLASS,
+		ARCHER_CLASS
 	};
 
 	//governs animations and available update logic

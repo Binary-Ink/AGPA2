@@ -30,28 +30,28 @@ DPhoenix::CharacterClass::CharacterClass(CharacterClasses _class, TextureMgr * _
 
 	switch (mClass)
 	{
-		case TOY_SOLDIER_CLASS:
+		case SOLDIER_CLASS:
 			mModelInstance = new PrimitiveInstance();
 			mModelInstance->LoadLitTexInstance(md3dDevice, "Textures\\Temp\\SoldierTemp_cm.png", mBox, mTexMgr);
 			mModelInstance->mMaterial = materialStandard;
 			mModelInstance->mNormalMap = mTexMgr->CreateTexture("Textures\\Temp\\SoldierTemp_cm.png");
 			mModelInstance->mHalfSizes = XMFLOAT3(4.0f, 4.0f, 4.0f);
 		break;
-		case DARK_ANGEL_CLASS:
+		case MAGE_CLASS:
 			mModelInstance = new PrimitiveInstance();
 			mModelInstance->LoadLitTexInstance(md3dDevice, "Textures\\Temp\\AngelTemp_cm.png", mBox, mTexMgr);
 			mModelInstance->mMaterial = materialStandard;
 			mModelInstance->mNormalMap = mTexMgr->CreateTexture("Textures\\Temp\\AngelTemp_nm.png");
 			mModelInstance->mHalfSizes = XMFLOAT3(4.0f, 4.0f, 4.0f);
 		break;
-		case DRAGON_CLASS:
+		case DWARF_CLASS:
 			mModelInstance = new PrimitiveInstance();
 			mModelInstance->LoadLitTexInstance(md3dDevice, "Textures\\Temp\\DragonTemp_cm.png", mBox, mTexMgr);
 			mModelInstance->mMaterial = materialStandard;
 			mModelInstance->mNormalMap = mTexMgr->CreateTexture("Textures\\Temp\\DragonTemp_nm.png");
 			mModelInstance->mHalfSizes = XMFLOAT3(4.0f, 4.0f, 4.0f);
 		break;
-		case BIG_CAT_CLASS:
+		case ARCHER_CLASS:
 			mModelInstance = new PrimitiveInstance();
 			mModelInstance->LoadLitTexInstance(md3dDevice, "Textures\\Temp\\CatTemp_cm.png", mBox, mTexMgr);
 			mModelInstance->mMaterial = materialStandard;
@@ -121,7 +121,7 @@ void DPhoenix::CharacterClass::SetBaseStats()
 	//SEE DOCUMENTATION FOR GROWTH CHARTS
 	switch(mClass)
 	{
-		case TOY_SOLDIER_CLASS: //NEW SOLDIER
+		case SOLDIER_CLASS: //NEW SOLDIER
 			mBaseExp = 100;
 			mBaseTP = 15;
 			mBaseHP = 50;
@@ -134,7 +134,7 @@ void DPhoenix::CharacterClass::SetBaseStats()
 			mBaseMagic = 5;
 			mBaseCharm = 10;
 		break;
-		case DARK_ANGEL_CLASS: //NEW MAGE
+		case MAGE_CLASS: //NEW MAGE
 			mBaseExp = 100;
 			mBaseTP = 10;
 			mBaseHP = 25;
@@ -147,7 +147,7 @@ void DPhoenix::CharacterClass::SetBaseStats()
 			mBaseMagic = 80;
 			mBaseCharm = 45;
 		break;
-		case DRAGON_CLASS: // NEW DWARF
+		case DWARF_CLASS: // NEW DWARF
 			mBaseExp = 100;
 			mBaseTP = 20;
 			mBaseHP = 20;
@@ -160,7 +160,7 @@ void DPhoenix::CharacterClass::SetBaseStats()
 			mBaseMagic = 60;
 			mBaseCharm = 30;
 		break;
-		case BIG_CAT_CLASS: // NEW ARCHER
+		case ARCHER_CLASS: // NEW ARCHER
 			mBaseExp = 100;
 			mBaseTP = 25;
 			mBaseHP = 20;
@@ -184,7 +184,7 @@ void DPhoenix::CharacterClass::CalculateStats(int _level)
 	//as defined in the spreadsheet and GDD
 	switch (mClass)
 	{
-	case TOY_SOLDIER_CLASS:
+	case SOLDIER_CLASS:
 		mExp = mBaseExp * (mLevel^2);
 		mTP = floor(mBaseTP + (pow(mLevel, 2) * 0.05));
 		mHP = floor(mBaseHP * (pow(mLevel,1.9)));
@@ -199,7 +199,7 @@ void DPhoenix::CharacterClass::CalculateStats(int _level)
 		mMagic = floor(mBaseMagic + pow(mLevel,2) * 0.25);
 		mCharm = floor(mBaseCharm + pow(mLevel, 2) * 0.4);
 	break;
-	case DARK_ANGEL_CLASS:
+	case MAGE_CLASS:
 		mExp = mBaseExp * (mLevel ^ 2);
 		mTP = floor(mBaseTP + (pow(mLevel, 2) * 0.05));
 		mHP = floor(mBaseHP * (pow(mLevel, 1.9)));
@@ -214,7 +214,7 @@ void DPhoenix::CharacterClass::CalculateStats(int _level)
 		mMagic = min(floor(log2(mLevel) * 50 + mBaseMagic), 255);
 		mCharm = min(floor(log2(mLevel) * 40 + mBaseCharm), 255);
 	break;
-	case DRAGON_CLASS:
+	case DWARF_CLASS:
 		mExp = mBaseExp * (mLevel ^ 2);
 		mTP = floor(mBaseTP + (pow(mLevel, 2) * 0.0125));
 		mHP = floor(mBaseHP * (pow(mLevel, 1.95)));
@@ -229,7 +229,7 @@ void DPhoenix::CharacterClass::CalculateStats(int _level)
 		mMagic = min(floor(log2(mLevel) * 35 + mBaseMagic), 255);
 		mCharm = min(floor(log2(mLevel) * 40 + mBaseCharm), 255);
 	break;
-	case BIG_CAT_CLASS:
+	case ARCHER_CLASS:
 		mExp = mBaseExp * (mLevel ^ 2);
 		mTP = floor(mBaseTP + (pow(mLevel, 2) * 0.05));
 		mHP = floor(mBaseHP * (pow(mLevel, 1.8)));

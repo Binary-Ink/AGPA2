@@ -125,10 +125,10 @@ private:
 	DPhoenix::Team* mPlayerTeam;
 	DPhoenix::Team* mEnemyTeam;
 
-	DPhoenix::CharacterClass* mToySoldierMenu;
-	DPhoenix::CharacterClass* mDarkAngelMenu;
-	DPhoenix::CharacterClass* mDragonMenu;
-	DPhoenix::CharacterClass* mBigCatMenu;
+	DPhoenix::CharacterClass* mSoldierMenu;
+	DPhoenix::CharacterClass* mMage;
+	DPhoenix::CharacterClass* mDwarfMenu;
+	DPhoenix::CharacterClass* mArcherMenu;
 
 	//UI Elements -------------------------
 	int mMouseX;
@@ -188,10 +188,10 @@ private:
 	DPhoenix::Sprite* mTakenTurnUISprite;
 
 	//avatars
-	DPhoenix::Sprite* mToySoldierAvatar;
-	DPhoenix::Sprite* mDarkAngelAvatar;
-	DPhoenix::Sprite* mDragonAvatar;
-	DPhoenix::Sprite* mBigCatAvatar;
+	DPhoenix::Sprite* mSoldierAvatar;
+	DPhoenix::Sprite* mMageAvatar;
+	DPhoenix::Sprite* mDwarfAvatar;
+	DPhoenix::Sprite* mArcherAvatar;
 
 	//teams
 	DPhoenix::TeamTypes mCurrentTeam;
@@ -553,25 +553,25 @@ bool BTLTAIDemo::Init(bool fullScreen)
 	mPlayerTeam = new DPhoenix::Team();
 	mEnemyTeam = new DPhoenix::Team();
 
-	mToySoldierMenu = new DPhoenix::CharacterClass(DPhoenix::TOY_SOLDIER_CLASS,
+	mSoldierMenu = new DPhoenix::CharacterClass(DPhoenix::SOLDIER_CLASS,
 		&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath);
-	mToySoldierMenu->mModelInstance->mPosition.x = 50.0f;
-	mToySoldierMenu->mModelInstance->mPosition.z = 37.5f;
+	mSoldierMenu->mModelInstance->mPosition.x = 50.0f;
+	mSoldierMenu->mModelInstance->mPosition.z = 37.5f;
 
-	mDarkAngelMenu = new DPhoenix::CharacterClass(DPhoenix::DARK_ANGEL_CLASS,
+	mMage = new DPhoenix::CharacterClass(DPhoenix::MAGE_CLASS,
 		&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath);
-	mDarkAngelMenu->mModelInstance->mPosition.x = 50.0f;
-	mDarkAngelMenu->mModelInstance->mPosition.z = mToySoldierMenu->mModelInstance->mPosition.z - 12.5f;
+	mMage->mModelInstance->mPosition.x = 50.0f;
+	mMage->mModelInstance->mPosition.z = mSoldierMenu->mModelInstance->mPosition.z - 12.5f;
 
-	mDragonMenu = new DPhoenix::CharacterClass(DPhoenix::DRAGON_CLASS,
+	mDwarfMenu = new DPhoenix::CharacterClass(DPhoenix::DWARF_CLASS,
 		&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath);
-	mDragonMenu->mModelInstance->mPosition.x = 50.0f;
-	mDragonMenu->mModelInstance->mPosition.z = mDarkAngelMenu->mModelInstance->mPosition.z - 12.5f;
+	mDwarfMenu->mModelInstance->mPosition.x = 50.0f;
+	mDwarfMenu->mModelInstance->mPosition.z = mMage->mModelInstance->mPosition.z - 12.5f;
 
-	mBigCatMenu = new DPhoenix::CharacterClass(DPhoenix::BIG_CAT_CLASS,
+	mArcherMenu = new DPhoenix::CharacterClass(DPhoenix::ARCHER_CLASS,
 		&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath);
-	mBigCatMenu->mModelInstance->mPosition.x = 50.0f;
-	mBigCatMenu->mModelInstance->mPosition.z = mDragonMenu->mModelInstance->mPosition.z - 12.5f;
+	mArcherMenu->mModelInstance->mPosition.x = 50.0f;
+	mArcherMenu->mModelInstance->mPosition.z = mDwarfMenu->mModelInstance->mPosition.z - 12.5f;
 
 	mSelectedLevel = 1;
 
@@ -712,14 +712,14 @@ bool BTLTAIDemo::Init(bool fullScreen)
 	mTakenTurnUISprite->Load("Textures\\UI\\TakenTurn.png", &mTexMgr, 250.0f, 50.0f, md3dDevice);
 
 	//avatars
-	mToySoldierAvatar = new DPhoenix::Sprite();
-	mToySoldierAvatar->Load("Textures\\UI\\SoldierAvatar.png", &mTexMgr, 25.0f, 25.0f, md3dDevice);
-	mDarkAngelAvatar = new DPhoenix::Sprite();
-	mDarkAngelAvatar->Load("Textures\\UI\\AngelAvatar.png", &mTexMgr, 25.0f, 25.0f, md3dDevice);
-	mDragonAvatar = new DPhoenix::Sprite();
-	mDragonAvatar->Load("Textures\\UI\\DragonAvatar.png", &mTexMgr, 25.0f, 25.0f, md3dDevice);
-	mBigCatAvatar = new DPhoenix::Sprite();
-	mBigCatAvatar->Load("Textures\\UI\\CatAvatar.png", &mTexMgr, 25.0f, 25.0f, md3dDevice);
+	mSoldierAvatar = new DPhoenix::Sprite();
+	mSoldierAvatar->Load("Textures\\UI\\SoldierAvatar.png", &mTexMgr, 25.0f, 25.0f, md3dDevice);
+	mMageAvatar = new DPhoenix::Sprite();
+	mMageAvatar->Load("Textures\\UI\\AngelAvatar.png", &mTexMgr, 25.0f, 25.0f, md3dDevice);
+	mDwarfAvatar = new DPhoenix::Sprite();
+	mDwarfAvatar->Load("Textures\\UI\\DragonAvatar.png", &mTexMgr, 25.0f, 25.0f, md3dDevice);
+	mArcherAvatar = new DPhoenix::Sprite();
+	mArcherAvatar->Load("Textures\\UI\\CatAvatar.png", &mTexMgr, 25.0f, 25.0f, md3dDevice);
 
 	//set early but not used until in game state
 	mCurrentTeam = DPhoenix::PLAYER_TEAM;
@@ -957,13 +957,13 @@ void BTLTAIDemo::CheckMouseHoverMenu()
 	int mouseX = mMouseX - 800;
 	int mouseY = 450 - mMouseY;
 
-	//toy soldier area
+	//soldier area
 	int tsLeft = -800; int tsTop = 150; int tsRight = tsLeft + 300; int tsBottom = tsTop - 350;
-	//dark angel area
+	//mage area
 	int daLeft = -500; int daTop = 150; int daRight = daLeft + 300; int daBottom = daTop - 350;
-	//dragon area
+	//dwarf area
 	int dLeft = -200; int dTop = 150; int dRight = dLeft + 300; int dBottom = dTop - 350;
-	//big cat area
+	//archer area
 	int bcLeft = 100; int bcTop = 150; int bcRight = bcLeft + 300; int bcBottom = bcTop - 350;
 
 	if (CheckPointInRect(mouseX, mouseY, tsLeft, tsTop, tsRight, tsBottom))
@@ -1005,13 +1005,13 @@ void BTLTAIDemo::CheckMouseClickMenu()
 	int mouseX = mMouseX - 800;
 	int mouseY = 450 - mMouseY;
 
-	//toy soldier area
+	//soldier area
 	int tsLeft = -800; int tsTop = 150; int tsRight = tsLeft + 300; int tsBottom = tsTop - 350;
-	//dark angel area
+	//magearea
 	int daLeft = -500; int daTop = 150; int daRight = daLeft + 300; int daBottom = daTop - 350;
-	//dragon area
+	//dwarf area
 	int dLeft = -200; int dTop = 150; int dRight = dLeft + 300; int dBottom = dTop - 350;
-	//big cat area
+	//archer area
 	int bcLeft = 100; int bcTop = 150; int bcRight = bcLeft + 300; int bcBottom = bcTop - 350;
 	//up level arrow
 	int upLeft = 700; int upTop = 250; int upRight = upLeft + 50; int upBottom = upTop - 50;
@@ -1025,28 +1025,28 @@ void BTLTAIDemo::CheckMouseClickMenu()
 	{
 		if (mPlayerTeam->mTeamMembers.size() < 4)
 		{
-			mPlayerTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mToySoldierMenu));
+			mPlayerTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mSoldierMenu));
 		}
 	}
 	else if (CheckPointInRect(mouseX, mouseY, daLeft, daTop, daRight, daBottom))
 	{
 		if (mPlayerTeam->mTeamMembers.size() < 4)
 		{
-			mPlayerTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mDarkAngelMenu));
+			mPlayerTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mMage));
 		}
 	}
 	else if (CheckPointInRect(mouseX, mouseY, dLeft, dTop, dRight, dBottom))
 	{
 		if (mPlayerTeam->mTeamMembers.size() < 4)
 		{
-			mPlayerTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mDragonMenu));
+			mPlayerTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mDwarfMenu));
 		}
 	}
 	else if (CheckPointInRect(mouseX, mouseY, bcLeft, bcTop, bcRight, bcBottom))
 	{
 		if (mPlayerTeam->mTeamMembers.size() < 4)
 		{
-			mPlayerTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mBigCatMenu));
+			mPlayerTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mArcherMenu));
 		}
 	}
 	//arrows and icons
@@ -1055,10 +1055,10 @@ void BTLTAIDemo::CheckMouseClickMenu()
 		if (mSelectedLevel < 20)
 		{
 			mSelectedLevel++;
-			mToySoldierMenu->CalculateStats(mSelectedLevel);
-			mDarkAngelMenu->CalculateStats(mSelectedLevel);
-			mDragonMenu->CalculateStats(mSelectedLevel);
-			mBigCatMenu->CalculateStats(mSelectedLevel);
+			mSoldierMenu->CalculateStats(mSelectedLevel);
+			mMage->CalculateStats(mSelectedLevel);
+			mDwarfMenu->CalculateStats(mSelectedLevel);
+			mArcherMenu->CalculateStats(mSelectedLevel);
 
 			for (int i = 0; i < mPlayerTeam->mTeamMembers.size(); i++)
 			{
@@ -1072,10 +1072,10 @@ void BTLTAIDemo::CheckMouseClickMenu()
 		if (mSelectedLevel > 1)
 		{
 			mSelectedLevel--;
-			mToySoldierMenu->CalculateStats(mSelectedLevel);
-			mDarkAngelMenu->CalculateStats(mSelectedLevel);
-			mDragonMenu->CalculateStats(mSelectedLevel);
-			mBigCatMenu->CalculateStats(mSelectedLevel);
+			mSoldierMenu->CalculateStats(mSelectedLevel);
+			mMage->CalculateStats(mSelectedLevel);
+			mDwarfMenu->CalculateStats(mSelectedLevel);
+			mArcherMenu->CalculateStats(mSelectedLevel);
 
 			for (int i = 0; i < mPlayerTeam->mTeamMembers.size(); i++)
 			{
@@ -1569,19 +1569,19 @@ void BTLTAIDemo::StartGameFromXML()
 		switch (rng)
 		{
 		case 0:
-			mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::TOY_SOLDIER_CLASS,
+			mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::SOLDIER_CLASS,
 				&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
 			break;
 		case 1:
-			mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::DARK_ANGEL_CLASS,
+			mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::MAGE_CLASS,
 				&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
 			break;
 		case 2:
-			mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::DRAGON_CLASS,
+			mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::DWARF_CLASS,
 				&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
 			break;
 		case 3:
-			mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::BIG_CAT_CLASS,
+			mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::ARCHER_CLASS,
 				&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
 			break;
 		}
@@ -1597,19 +1597,19 @@ void BTLTAIDemo::StartGameFromXML()
 
 		if (selectedTeam->characters[i]->characterclass == "Soldier")
 		{
-			charClass = DPhoenix::TOY_SOLDIER_CLASS;
+			charClass = DPhoenix::SOLDIER_CLASS;
 		}
 		else if (selectedTeam->characters[i]->characterclass == "Mage")
 		{
-			charClass = DPhoenix::DARK_ANGEL_CLASS;
+			charClass = DPhoenix::MAGE_CLASS;
 		}
 		else if (selectedTeam->characters[i]->characterclass == "Dwarf")
 		{
-			charClass = DPhoenix::DRAGON_CLASS;
+			charClass = DPhoenix::DWARF_CLASS;
 		}
 		else if (selectedTeam->characters[i]->characterclass == "Archer")
 		{
-			charClass = DPhoenix::BIG_CAT_CLASS;
+			charClass = DPhoenix::ARCHER_CLASS;
 		}
 
 		mPlayerTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(
@@ -1727,16 +1727,16 @@ void BTLTAIDemo::SaveCreateMenu()
 
 		switch (mCreateMenuTeam->mTeamMembers[i]->mClass)
 		{
-		case DPhoenix::TOY_SOLDIER_CLASS:
+		case DPhoenix::SOLDIER_CLASS:
 			newTeam->characters[i]->characterclass = "Soldier"; 
 			break; 
-		case DPhoenix::DARK_ANGEL_CLASS:
+		case DPhoenix::MAGE_CLASS:
 			newTeam->characters[i]->characterclass = "Mage";
 			break;
-		case DPhoenix::DRAGON_CLASS:
+		case DPhoenix::DWARF_CLASS:
 			newTeam->characters[i]->characterclass = "Dwarf";
 			break;
-		case DPhoenix::BIG_CAT_CLASS:
+		case DPhoenix::ARCHER_CLASS:
 			newTeam->characters[i]->characterclass = "Archer";
 			break;
 		}
@@ -1760,19 +1760,19 @@ void BTLTAIDemo::InitCreateMenu()
 	mCreateMenuTeam = new DPhoenix::Team(); 
 	mCreateMenuTeam->mTeamName = "CLICK TO EDIT"; 
 
-	mCreateMenuTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::TOY_SOLDIER_CLASS,
+	mCreateMenuTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::SOLDIER_CLASS,
 		&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
 	mCreateMenuTeam->mTeamMembers.back()->mMemberName = "MEMBER 1"; 
 
-	mCreateMenuTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::TOY_SOLDIER_CLASS,
+	mCreateMenuTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::SOLDIER_CLASS,
 		&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
 	mCreateMenuTeam->mTeamMembers.back()->mMemberName = "MEMBER 2";
 
-	mCreateMenuTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::TOY_SOLDIER_CLASS,
+	mCreateMenuTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::SOLDIER_CLASS,
 		&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
 	mCreateMenuTeam->mTeamMembers.back()->mMemberName = "MEMBER 3";
 
-	mCreateMenuTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::TOY_SOLDIER_CLASS,
+	mCreateMenuTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(DPhoenix::SOLDIER_CLASS,
 		&mTexMgr, md3dDevice, &mAudioMgr, mHappyPath));
 	mCreateMenuTeam->mTeamMembers.back()->mMemberName = "MEMBER 4";
 
@@ -2312,10 +2312,10 @@ void BTLTAIDemo::UpdateScene(float dt)
 		mDirLights.back()->Ambient = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 		mDirLights.back()->Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
 
-		mToySoldierMenu->mModelInstance->mRotation.y += 1.0f * dt;
-		mDarkAngelMenu->mModelInstance->mRotation.y += 1.0f * dt;
-		mDragonMenu->mModelInstance->mRotation.y += 1.0f * dt;
-		mBigCatMenu->mModelInstance->mRotation.y += 1.0f * dt;
+		mSoldierMenu->mModelInstance->mRotation.y += 1.0f * dt;
+		mMage->mModelInstance->mRotation.y += 1.0f * dt;
+		mDwarfMenu->mModelInstance->mRotation.y += 1.0f * dt;
+		mArcherMenu->mModelInstance->mRotation.y += 1.0f * dt;
 
 		switch (mMenuState)
 		{
@@ -2333,16 +2333,16 @@ void BTLTAIDemo::UpdateScene(float dt)
 				switch (rng)
 				{
 				case 0:
-					mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mToySoldierMenu));
+					mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mSoldierMenu));
 					break;
 				case 1:
-					mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mDarkAngelMenu));
+					mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mMage));
 					break;
 				case 2:
-					mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mDragonMenu));
+					mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mDwarfMenu));
 					break;
 				case 3:
-					mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mBigCatMenu));
+					mEnemyTeam->mTeamMembers.push_back(new DPhoenix::CharacterClass(*mArcherMenu));
 					break;
 				}
 
@@ -3440,10 +3440,10 @@ void BTLTAIDemo::DrawScene()
 	switch (mGameState)
 	{
 	case GAME_MENU_STATE:
-		RenderLitTexNormPrimitive(mToySoldierMenu->mModelInstance, activeLitTexNormalTech);
-		RenderLitTexNormPrimitive(mDarkAngelMenu->mModelInstance, activeLitTexNormalTech);
-		RenderLitTexNormPrimitive(mDragonMenu->mModelInstance, activeLitTexNormalTech);
-		RenderLitTexNormPrimitive(mBigCatMenu->mModelInstance, activeLitTexNormalTech);
+		RenderLitTexNormPrimitive(mSoldierMenu->mModelInstance, activeLitTexNormalTech);
+		RenderLitTexNormPrimitive(mMage->mModelInstance, activeLitTexNormalTech);
+		RenderLitTexNormPrimitive(mDwarfMenu->mModelInstance, activeLitTexNormalTech);
+		RenderLitTexNormPrimitive(mArcherMenu->mModelInstance, activeLitTexNormalTech);
 		break;
 	case GAME_PLAY_STATE:
 
@@ -3737,25 +3737,25 @@ void BTLTAIDemo::DrawScene()
 		{
 			switch (mPlayerTeam->mTeamMembers[i]->mClass)
 			{
-			case DPhoenix::TOY_SOLDIER_CLASS:
-				mToySoldierAvatar->mPosition.x = initialX + 25.0f;
-				mToySoldierAvatar->mPosition.y = initialY - 12.5f;
-				RenderSprite(mToySoldierAvatar, activeSpriteTech, true);
+			case DPhoenix::SOLDIER_CLASS:
+				mSoldierAvatar->mPosition.x = initialX + 25.0f;
+				mSoldierAvatar->mPosition.y = initialY - 12.5f;
+				RenderSprite(mSoldierAvatar, activeSpriteTech, true);
 				break;
-			case DPhoenix::DARK_ANGEL_CLASS:
-				mDarkAngelAvatar->mPosition.x = initialX + 25.0f;
-				mDarkAngelAvatar->mPosition.y = initialY - 12.5f;
-				RenderSprite(mDarkAngelAvatar, activeSpriteTech, true);
+			case DPhoenix::MAGE_CLASS:
+				mMageAvatar->mPosition.x = initialX + 25.0f;
+				mMageAvatar->mPosition.y = initialY - 12.5f;
+				RenderSprite(mMageAvatar, activeSpriteTech, true);
 				break;
-			case DPhoenix::DRAGON_CLASS:
-				mDragonAvatar->mPosition.x = initialX + 25.0f;
-				mDragonAvatar->mPosition.y = initialY - 12.5f;
-				RenderSprite(mDragonAvatar, activeSpriteTech, true);
+			case DPhoenix::DWARF_CLASS:
+				mDwarfAvatar->mPosition.x = initialX + 25.0f;
+				mDwarfAvatar->mPosition.y = initialY - 12.5f;
+				RenderSprite(mDwarfAvatar, activeSpriteTech, true);
 				break;
-			case DPhoenix::BIG_CAT_CLASS:
-				mBigCatAvatar->mPosition.x = initialX + 25.0f;
-				mBigCatAvatar->mPosition.y = initialY - 12.5f;
-				RenderSprite(mBigCatAvatar, activeSpriteTech, true);
+			case DPhoenix::ARCHER_CLASS:
+				mArcherAvatar->mPosition.x = initialX + 25.0f;
+				mArcherAvatar->mPosition.y = initialY - 12.5f;
+				RenderSprite(mArcherAvatar, activeSpriteTech, true);
 				break;
 			}
 		}
@@ -3767,25 +3767,25 @@ void BTLTAIDemo::DrawScene()
 		{
 			switch (mEnemyTeam->mTeamMembers[i]->mClass)
 			{
-			case DPhoenix::TOY_SOLDIER_CLASS:
-				mToySoldierAvatar->mPosition.x = initialX + 25.0f;
-				mToySoldierAvatar->mPosition.y = initialY - 12.5f;
-				RenderSprite(mToySoldierAvatar, activeSpriteTech, true);
+			case DPhoenix::SOLDIER_CLASS:
+				mSoldierAvatar->mPosition.x = initialX + 25.0f;
+				mSoldierAvatar->mPosition.y = initialY - 12.5f;
+				RenderSprite(mSoldierAvatar, activeSpriteTech, true);
 				break;
-			case DPhoenix::DARK_ANGEL_CLASS:
-				mDarkAngelAvatar->mPosition.x = initialX + 25.0f;
-				mDarkAngelAvatar->mPosition.y = initialY - 12.5f;
-				RenderSprite(mDarkAngelAvatar, activeSpriteTech, true);
+			case DPhoenix::MAGE_CLASS:
+				mMageAvatar->mPosition.x = initialX + 25.0f;
+				mMageAvatar->mPosition.y = initialY - 12.5f;
+				RenderSprite(mMageAvatar, activeSpriteTech, true);
 				break;
-			case DPhoenix::DRAGON_CLASS:
-				mDragonAvatar->mPosition.x = initialX + 25.0f;
-				mDragonAvatar->mPosition.y = initialY - 12.5f;
-				RenderSprite(mDragonAvatar, activeSpriteTech, true);
+			case DPhoenix::DWARF_CLASS:
+				mDwarfAvatar->mPosition.x = initialX + 25.0f;
+				mDwarfAvatar->mPosition.y = initialY - 12.5f;
+				RenderSprite(mDwarfAvatar, activeSpriteTech, true);
 				break;
-			case DPhoenix::BIG_CAT_CLASS:
-				mBigCatAvatar->mPosition.x = initialX + 25.0f;
-				mBigCatAvatar->mPosition.y = initialY - 12.5f;
-				RenderSprite(mBigCatAvatar, activeSpriteTech, true);
+			case DPhoenix::ARCHER_CLASS:
+				mArcherAvatar->mPosition.x = initialX + 25.0f;
+				mArcherAvatar->mPosition.y = initialY - 12.5f;
+				RenderSprite(mArcherAvatar, activeSpriteTech, true);
 				break;
 			}
 		}
@@ -4009,16 +4009,16 @@ void BTLTAIDemo::DrawScene()
 		{
 			switch (mPlayerTeam->mTeamMembers[0]->mClass)
 			{
-			case DPhoenix::TOY_SOLDIER_CLASS:
+			case DPhoenix::SOLDIER_CLASS:
 				classesText << "Soldier" << std::endl;
 				break;
-			case DPhoenix::DARK_ANGEL_CLASS:
+			case DPhoenix::MAGE_CLASS:
 				classesText << "Mage" << std::endl;
 				break;
-			case DPhoenix::DRAGON_CLASS:
+			case DPhoenix::DWARF_CLASS:
 				classesText << "Dwarf" << std::endl;
 				break;
-			case DPhoenix::BIG_CAT_CLASS:
+			case DPhoenix::ARCHER_CLASS:
 				classesText << "Archer" << std::endl;
 				break;
 			}
@@ -4036,16 +4036,16 @@ void BTLTAIDemo::DrawScene()
 		{
 			switch (mPlayerTeam->mTeamMembers[1]->mClass)
 			{
-			case DPhoenix::TOY_SOLDIER_CLASS:
+			case DPhoenix::SOLDIER_CLASS:
 				classesText << "Soldier" << std::endl;
 				break;
-			case DPhoenix::DARK_ANGEL_CLASS:
+			case DPhoenix::MAGE_CLASS:
 				classesText << "Mage" << std::endl;
 				break;
-			case DPhoenix::DRAGON_CLASS:
+			case DPhoenix::DWARF_CLASS:
 				classesText << "Dwarf" << std::endl;
 				break;
-			case DPhoenix::BIG_CAT_CLASS:
+			case DPhoenix::ARCHER_CLASS:
 				classesText << "Archer" << std::endl;
 				break;
 			}
@@ -4062,16 +4062,16 @@ void BTLTAIDemo::DrawScene()
 		{
 			switch (mPlayerTeam->mTeamMembers[2]->mClass)
 			{
-			case DPhoenix::TOY_SOLDIER_CLASS:
+			case DPhoenix::SOLDIER_CLASS:
 				classesText << "Soldier" << std::endl;
 				break;
-			case DPhoenix::DARK_ANGEL_CLASS:
+			case DPhoenix::MAGE_CLASS:
 				classesText << "Mage" << std::endl;
 				break;
-			case DPhoenix::DRAGON_CLASS:
+			case DPhoenix::DWARF_CLASS:
 				classesText << "Dwarf" << std::endl;
 				break;
-			case DPhoenix::BIG_CAT_CLASS:
+			case DPhoenix::ARCHER_CLASS:
 				classesText << "Archer" << std::endl;
 				break;
 			}
@@ -4088,16 +4088,16 @@ void BTLTAIDemo::DrawScene()
 		{
 			switch (mPlayerTeam->mTeamMembers[3]->mClass)
 			{
-			case DPhoenix::TOY_SOLDIER_CLASS:
+			case DPhoenix::SOLDIER_CLASS:
 				classesText << "Soldier" << std::endl;
 				break;
-			case DPhoenix::DARK_ANGEL_CLASS:
+			case DPhoenix::MAGE_CLASS:
 				classesText << "Mage" << std::endl;
 				break;
-			case DPhoenix::DRAGON_CLASS:
+			case DPhoenix::DWARF_CLASS:
 				classesText << "Dwarf" << std::endl;
 				break;
-			case DPhoenix::BIG_CAT_CLASS:
+			case DPhoenix::ARCHER_CLASS:
 				classesText << "Archer" << std::endl;
 				break;
 			}
@@ -4118,16 +4118,16 @@ void BTLTAIDemo::DrawScene()
 		{
 			switch (mEnemyTeam->mTeamMembers[0]->mClass)
 			{
-			case DPhoenix::TOY_SOLDIER_CLASS:
+			case DPhoenix::SOLDIER_CLASS:
 				classesText << "Soldier" << std::endl;
 				break;
-			case DPhoenix::DARK_ANGEL_CLASS:
+			case DPhoenix::MAGE_CLASS:
 				classesText << "Mage" << std::endl;
 				break;
-			case DPhoenix::DRAGON_CLASS:
+			case DPhoenix::DWARF_CLASS:
 				classesText << "Dwarf" << std::endl;
 				break;
-			case DPhoenix::BIG_CAT_CLASS:
+			case DPhoenix::ARCHER_CLASS:
 				classesText << "Archer" << std::endl;
 				break;
 			}
@@ -4145,16 +4145,16 @@ void BTLTAIDemo::DrawScene()
 		{
 			switch (mEnemyTeam->mTeamMembers[1]->mClass)
 			{
-			case DPhoenix::TOY_SOLDIER_CLASS:
+			case DPhoenix::SOLDIER_CLASS:
 				classesText << "Soldier" << std::endl;
 				break;
-			case DPhoenix::DARK_ANGEL_CLASS:
+			case DPhoenix::MAGE_CLASS:
 				classesText << "Mage" << std::endl;
 				break;
-			case DPhoenix::DRAGON_CLASS:
+			case DPhoenix::DWARF_CLASS:
 				classesText << "Dwarf" << std::endl;
 				break;
-			case DPhoenix::BIG_CAT_CLASS:
+			case DPhoenix::ARCHER_CLASS:
 				classesText << "Archer" << std::endl;
 				break;
 			}
@@ -4171,16 +4171,16 @@ void BTLTAIDemo::DrawScene()
 		{
 			switch (mEnemyTeam->mTeamMembers[2]->mClass)
 			{
-			case DPhoenix::TOY_SOLDIER_CLASS:
+			case DPhoenix::SOLDIER_CLASS:
 				classesText << "Soldier" << std::endl;
 				break;
-			case DPhoenix::DARK_ANGEL_CLASS:
+			case DPhoenix::MAGE_CLASS:
 				classesText << "Mage" << std::endl;
 				break;
-			case DPhoenix::DRAGON_CLASS:
+			case DPhoenix::DWARF_CLASS:
 				classesText << "Dwarf" << std::endl;
 				break;
-			case DPhoenix::BIG_CAT_CLASS:
+			case DPhoenix::ARCHER_CLASS:
 				classesText << "Archer" << std::endl;
 				break;
 			}
@@ -4197,16 +4197,16 @@ void BTLTAIDemo::DrawScene()
 		{
 			switch (mEnemyTeam->mTeamMembers[3]->mClass)
 			{
-			case DPhoenix::TOY_SOLDIER_CLASS:
+			case DPhoenix::SOLDIER_CLASS:
 				classesText << "Soldier" << std::endl;
 				break;
-			case DPhoenix::DARK_ANGEL_CLASS:
+			case DPhoenix::MAGE_CLASS:
 				classesText << "Mage" << std::endl;
 				break;
-			case DPhoenix::DRAGON_CLASS:
+			case DPhoenix::DWARF_CLASS:
 				classesText << "Dwarf" << std::endl;
 				break;
-			case DPhoenix::BIG_CAT_CLASS:
+			case DPhoenix::ARCHER_CLASS:
 				classesText << "Archer" << std::endl;
 				break;
 			}
@@ -4219,93 +4219,93 @@ void BTLTAIDemo::DrawScene()
 
 #pragma endregion SelectedEnemyClasses
 
-#pragma region ToySoldierStats
+#pragma region SoldierStats
 
 
 
-		tsText << mToySoldierMenu->mTP << std::endl;
-		tsText << mToySoldierMenu->mHP << std::endl;
-		tsText << mToySoldierMenu->mMP << std::endl;
-		tsText << mToySoldierMenu->mPower << std::endl;
-		tsText << mToySoldierMenu->mFirepower << std::endl;
-		tsText << mToySoldierMenu->mDefense << std::endl;
-		tsText << mToySoldierMenu->mAccuracy << std::endl;
-		tsText << mToySoldierMenu->mEvasion << std::endl;
-		tsText << mToySoldierMenu->mMagic << std::endl;
-		tsText << mToySoldierMenu->mCharm << std::endl;
+		tsText << mSoldierMenu->mTP << std::endl;
+		tsText << mSoldierMenu->mHP << std::endl;
+		tsText << mSoldierMenu->mMP << std::endl;
+		tsText << mSoldierMenu->mPower << std::endl;
+		tsText << mSoldierMenu->mFirepower << std::endl;
+		tsText << mSoldierMenu->mDefense << std::endl;
+		tsText << mSoldierMenu->mAccuracy << std::endl;
+		tsText << mSoldierMenu->mEvasion << std::endl;
+		tsText << mSoldierMenu->mMagic << std::endl;
+		tsText << mSoldierMenu->mCharm << std::endl;
 
 		//call draw font method sending all key info
 		//thankfully, fonts are from top-left
 		mUIFont16pt->DrawFont(m2D1RT, tsText.str(), 200.0f, 650.0f,
 			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
 
-#pragma endregion ToySoldierStats			
+#pragma endregion SoldierStats			
 
-#pragma region DarkAngelStats
+#pragma region MageStats
 
 
 
-		daText << mDarkAngelMenu->mTP << std::endl;
-		daText << mDarkAngelMenu->mHP << std::endl;
-		daText << mDarkAngelMenu->mMP << std::endl;
-		daText << mDarkAngelMenu->mPower << std::endl;
-		daText << mDarkAngelMenu->mFirepower << std::endl;
-		daText << mDarkAngelMenu->mDefense << std::endl;
-		daText << mDarkAngelMenu->mAccuracy << std::endl;
-		daText << mDarkAngelMenu->mEvasion << std::endl;
-		daText << mDarkAngelMenu->mMagic << std::endl;
-		daText << mDarkAngelMenu->mCharm << std::endl;
+		daText << mMage->mTP << std::endl;
+		daText << mMage->mHP << std::endl;
+		daText << mMage->mMP << std::endl;
+		daText << mMage->mPower << std::endl;
+		daText << mMage->mFirepower << std::endl;
+		daText << mMage->mDefense << std::endl;
+		daText << mMage->mAccuracy << std::endl;
+		daText << mMage->mEvasion << std::endl;
+		daText << mMage->mMagic << std::endl;
+		daText << mMage->mCharm << std::endl;
 
 		//call draw font method sending all key info
 		//thankfully, fonts are from top-left
 		mUIFont16pt->DrawFont(m2D1RT, daText.str(), 500.0f, 650.0f,
 			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
 
-#pragma endregion DarkAngelStats
+#pragma endregion MageStats
 
-#pragma region DragonStats
+#pragma region DwarfStats
 
 
 
-		dText << mDragonMenu->mTP << std::endl;
-		dText << mDragonMenu->mHP << std::endl;
-		dText << mDragonMenu->mMP << std::endl;
-		dText << mDragonMenu->mPower << std::endl;
-		dText << mDragonMenu->mFirepower << std::endl;
-		dText << mDragonMenu->mDefense << std::endl;
-		dText << mDragonMenu->mAccuracy << std::endl;
-		dText << mDragonMenu->mEvasion << std::endl;
-		dText << mDragonMenu->mMagic << std::endl;
-		dText << mDragonMenu->mCharm << std::endl;
+		dText << mDwarfMenu->mTP << std::endl;
+		dText << mDwarfMenu->mHP << std::endl;
+		dText << mDwarfMenu->mMP << std::endl;
+		dText << mDwarfMenu->mPower << std::endl;
+		dText << mDwarfMenu->mFirepower << std::endl;
+		dText << mDwarfMenu->mDefense << std::endl;
+		dText << mDwarfMenu->mAccuracy << std::endl;
+		dText << mDwarfMenu->mEvasion << std::endl;
+		dText << mDwarfMenu->mMagic << std::endl;
+		dText << mDwarfMenu->mCharm << std::endl;
 
 		//call draw font method sending all key info
 		//thankfully, fonts are from top-left
 		mUIFont16pt->DrawFont(m2D1RT, dText.str(), 800.0f, 650.0f,
 			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
 
-#pragma endregion DragonStats
+#pragma endregion DwarfStats
 
-#pragma region BigCatStats
+#pragma region ArcherStats
 
 
 
-		bcText << mBigCatMenu->mTP << std::endl;
-		bcText << mBigCatMenu->mHP << std::endl;
-		bcText << mBigCatMenu->mMP << std::endl;
-		bcText << mBigCatMenu->mPower << std::endl;
-		bcText << mBigCatMenu->mFirepower << std::endl;
-		bcText << mBigCatMenu->mDefense << std::endl;
-		bcText << mBigCatMenu->mAccuracy << std::endl;
-		bcText << mBigCatMenu->mEvasion << std::endl;
-		bcText << mBigCatMenu->mMagic << std::endl;
-		bcText << mBigCatMenu->mCharm << std::endl;
+		bcText << mArcherMenu->mTP << std::endl;
+		bcText << mArcherMenu->mHP << std::endl;
+		bcText << mArcherMenu->mMP << std::endl;
+		bcText << mArcherMenu->mPower << std::endl;
+		bcText << mArcherMenu->mFirepower << std::endl;
+		bcText << mArcherMenu->mDefense << std::endl;
+		bcText << mArcherMenu->mAccuracy << std::endl;
+		bcText << mArcherMenu->mEvasion << std::endl;
+		bcText << mArcherMenu->mMagic << std::endl;
+		bcText << mArcherMenu->mCharm << std::endl;
 
 		//call draw font method sending all key info
 		//thankfully, fonts are from top-left
 		mUIFont16pt->DrawFont(m2D1RT, bcText.str(), 1100.0f, 650.0f,
 			1.0f, 1.0f, D2D1::ColorF(0xFFFFFF, 1.0f));
 
-#pragma endregion BigCatStats
+#pragma endregion Archer
 
 		break;
 
@@ -4513,16 +4513,16 @@ void BTLTAIDemo::DrawScene()
 
 		switch (mCreateMenuTeam->mTeamMembers[0]->mClass)
 		{
-		case DPhoenix::TOY_SOLDIER_CLASS:
+		case DPhoenix::SOLDIER_CLASS:
 			member1ClassText << "Soldier" << std::endl;
 			break;
-		case DPhoenix::DARK_ANGEL_CLASS:
+		case DPhoenix::MAGE_CLASS:
 			member1ClassText << "Mage" << std::endl;
 			break;
-		case DPhoenix::DRAGON_CLASS:
+		case DPhoenix::DWARF_CLASS:
 			member1ClassText << "Dwarf" << std::endl;
 			break;
-		case DPhoenix::BIG_CAT_CLASS:
+		case DPhoenix::ARCHER_CLASS:
 			member1ClassText << "Archer" << std::endl;
 			break;
 		}
@@ -4548,16 +4548,16 @@ void BTLTAIDemo::DrawScene()
 
 		switch (mCreateMenuTeam->mTeamMembers[1]->mClass)
 		{
-		case DPhoenix::TOY_SOLDIER_CLASS:
+		case DPhoenix::SOLDIER_CLASS:
 			member2ClassText << "Soldier" << std::endl;
 			break;
-		case DPhoenix::DARK_ANGEL_CLASS:
+		case DPhoenix::MAGE_CLASS:
 			member2ClassText << "Mage" << std::endl;
 			break;
-		case DPhoenix::DRAGON_CLASS:
+		case DPhoenix::DWARF_CLASS:
 			member2ClassText << "Dwarf" << std::endl;
 			break;
-		case DPhoenix::BIG_CAT_CLASS:
+		case DPhoenix::ARCHER_CLASS:
 			member2ClassText << "Archer" << std::endl;
 			break;
 		}
@@ -4584,16 +4584,16 @@ void BTLTAIDemo::DrawScene()
 
 		switch (mCreateMenuTeam->mTeamMembers[2]->mClass)
 		{
-		case DPhoenix::TOY_SOLDIER_CLASS:
+		case DPhoenix::SOLDIER_CLASS:
 			member3ClassText << "Soldier" << std::endl;
 			break;
-		case DPhoenix::DARK_ANGEL_CLASS:
+		case DPhoenix::MAGE_CLASS:
 			member3ClassText << "Mage" << std::endl;
 			break;
-		case DPhoenix::DRAGON_CLASS:
+		case DPhoenix::DWARF_CLASS:
 			member3ClassText << "Dwarf" << std::endl;
 			break;
-		case DPhoenix::BIG_CAT_CLASS:
+		case DPhoenix::ARCHER_CLASS:
 			member3ClassText << "Archer" << std::endl;
 			break;
 		}
@@ -4620,16 +4620,16 @@ void BTLTAIDemo::DrawScene()
 
 		switch (mCreateMenuTeam->mTeamMembers[3]->mClass)
 		{
-		case DPhoenix::TOY_SOLDIER_CLASS:
+		case DPhoenix::SOLDIER_CLASS:
 			member4ClassText << "Soldier" << std::endl;
 			break;
-		case DPhoenix::DARK_ANGEL_CLASS:
+		case DPhoenix::MAGE_CLASS:
 			member4ClassText << "Mage" << std::endl;
 			break;
-		case DPhoenix::DRAGON_CLASS:
+		case DPhoenix::DWARF_CLASS:
 			member4ClassText << "Dwarf" << std::endl;
 			break;
-		case DPhoenix::BIG_CAT_CLASS:
+		case DPhoenix::ARCHER_CLASS:
 			member4ClassText << "Archer" << std::endl;
 			break;
 		}
@@ -4675,16 +4675,16 @@ void BTLTAIDemo::DrawScene()
 
 		switch (mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mClass)
 		{
-		case DPhoenix::TOY_SOLDIER_CLASS:
+		case DPhoenix::SOLDIER_CLASS:
 			memberEditClassText << "Soldier" << std::endl;
 			break;
-		case DPhoenix::DARK_ANGEL_CLASS:
+		case DPhoenix::MAGE_CLASS:
 			memberEditClassText << "Mage" << std::endl;
 			break;
-		case DPhoenix::DRAGON_CLASS:
+		case DPhoenix::DWARF_CLASS:
 			memberEditClassText << "Dwarf" << std::endl;
 			break;
-		case DPhoenix::BIG_CAT_CLASS:
+		case DPhoenix::ARCHER_CLASS:
 			memberEditClassText << "Archer" << std::endl;
 			break;
 		}

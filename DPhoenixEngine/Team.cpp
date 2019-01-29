@@ -229,7 +229,7 @@ void DPhoenix::Team::CheckAvailableActions(std::vector<std::vector<MapBlock*>>& 
 
 	switch (mTeamMembers[mCurrentMember]->mClass)
 	{
-		case TOY_SOLDIER_CLASS:
+		case SOLDIER_CLASS:
 
 			if(mTPPool >= 2)
 				mAvailableActions.push_back(PISTOL_ACTION);
@@ -239,7 +239,7 @@ void DPhoenix::Team::CheckAvailableActions(std::vector<std::vector<MapBlock*>>& 
 				mAvailableActions.push_back(ROCKET_LAUNCHER_ACTION);
 
 		break;
-		case DARK_ANGEL_CLASS:
+		case MAGE_CLASS:
 
 			if (mTPPool >= 2 && mTeamMembers[mCurrentMember]->mMP >= 25)
 				mAvailableActions.push_back(FIRE_ACTION);
@@ -251,7 +251,7 @@ void DPhoenix::Team::CheckAvailableActions(std::vector<std::vector<MapBlock*>>& 
 				mAvailableActions.push_back(DARKNESS_ACTION);
 
 		break;
-		case DRAGON_CLASS:
+		case DWARF_CLASS:
 
 			if (mTPPool >= 2 && mTeamMembers[mCurrentMember]->mMP >= 25)
 				mAvailableActions.push_back(FIRE_ACTION);
@@ -261,7 +261,7 @@ void DPhoenix::Team::CheckAvailableActions(std::vector<std::vector<MapBlock*>>& 
 				mAvailableActions.push_back(SCALE_THROW_ACTION);
 
 		break;
-		case BIG_CAT_CLASS:
+		case ARCHER_CLASS:
 
 			if (mTPPool >= 10 && mTeamMembers[mCurrentMember]->mMP >= 50)
 				mAvailableActions.push_back(FURBALL_ARCANA_ACTION);
