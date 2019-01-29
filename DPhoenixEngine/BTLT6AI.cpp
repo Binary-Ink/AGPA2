@@ -917,10 +917,6 @@ bool BTLTAIDemo::Init(bool fullScreen)
 #pragma region AudioInit
 
 		mAudioMgr.GetSound("Titlescreen")->Play(1);
-		//mAudioMgr.GetSound("Gameplay")->Play(1);
-		//mAudioMgr.GetSound("Menu")->Play(1);
-	
-
 
 #pragma endregion AudioInit
 
@@ -1463,14 +1459,14 @@ if (mCreateMenuTeam->mTeamName.size() < 15)
 }
 
 //check for backspace/left
-if (input == DIK_LEFT || input == DIK_BACK)
-{
-	//as long as characters in name remove last character
-	if (mCreateMenuTeam->mTeamName.size() > 0)
+	if (input == DIK_LEFT || input == DIK_BACK)
 	{
-		mCreateMenuTeam->mTeamName.pop_back();
+		//as long as characters in name remove last character
+		if (mCreateMenuTeam->mTeamName.size() > 0)
+		{
+			mCreateMenuTeam->mTeamName.pop_back();
+		}
 	}
-}
 }
 
 void BTLTAIDemo::EditMemberName(DPhoenix::KeyReleaseEvent * key)
@@ -2484,6 +2480,7 @@ void BTLTAIDemo::UpdateScene(float dt)
 				mCurrentTeam = DPhoenix::PLAYER_TEAM;
 			}		
 			activeTeam->ResetTeamTurn();
+			mHappyPath.clear();
 		}
 
 
