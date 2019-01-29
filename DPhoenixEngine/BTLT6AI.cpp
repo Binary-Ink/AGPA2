@@ -454,7 +454,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 BTLTAIDemo::BTLTAIDemo(HINSTANCE hInstance)
 	: Engine(hInstance)
 {
-	mMainWndCaption = "Big Trouble in Little Toyland";
+	mMainWndCaption = "Tower Attack";
 	//create camera here to prevent
 	//issues with matrix generation
 	mCamera = new DPhoenix::Camera();
@@ -5186,10 +5186,6 @@ void BTLTAIDemo::HandleEvents(DPhoenix::IEvent* e)
 				}
 				else if (mGameState == GAME_MENU_STATE)
 				{
-					
-					//play sound
-					mAudioMgr.GetSound("Menu")->Play(1);
-
 					if (mMenuState == CHOOSE_MENUSTATE &&
 						mPlayerTeam->mTeamMembers.size() == 4)
 					{

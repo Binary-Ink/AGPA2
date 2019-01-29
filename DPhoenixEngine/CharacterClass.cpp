@@ -308,8 +308,6 @@ int DPhoenix::CharacterClass::WeaponAttack(CharacterClass*_target, int _modifier
 
 void DPhoenix::CharacterClass::Update(float dt)
 {
-	//lots of logic to go here!
-
 	switch (mLifeState)
 	{
 		case CH_OK_LIFESTATE:
@@ -322,11 +320,12 @@ void DPhoenix::CharacterClass::Update(float dt)
 					{
 						case CH_MOVERT_MOVESTATE:
 
-							//WHEN PLAYER MOVES, PLAY FX(I ADDED THIS)
-
+							//WHEN PLAYER MOVES, PLAY FX 
 							if (!mAudioMgr->GetSound("Footsteps")->IsPlaying()) {
 								mAudioMgr->GetSound("Footsteps")->Play(true); 
 							}
+
+
 							XMFLOAT3 goal = mHappyPath[0]->mPosition;
 
 							goal.y = mModelInstance->mPosition.y;
