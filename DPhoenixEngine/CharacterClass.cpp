@@ -117,61 +117,61 @@ DPhoenix::CharacterClass::~CharacterClass()
 
 void DPhoenix::CharacterClass::SetBaseStats()
 {
-	//CHANGE THESEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-	//as defined in the spreadsheet and GDD
+	//NEW CLASSES 
+	//SEE DOCUMENTATION FOR GROWTH CHARTS
 	switch(mClass)
 	{
-		case TOY_SOLDIER_CLASS:
+		case TOY_SOLDIER_CLASS: //NEW SOLDIER
+			mBaseExp = 100;
+			mBaseTP = 15;
+			mBaseHP = 50;
+			mBaseMP = 5;
+			mBasePower = 45;
+			mBaseFirepower = 35;
+			mBaseDefense = 10;
+			mBaseAccuracy = 50;
+			mBaseEvasion = 15;
+			mBaseMagic = 5;
+			mBaseCharm = 10;
+		break;
+		case DARK_ANGEL_CLASS: //NEW MAGE
 			mBaseExp = 100;
 			mBaseTP = 10;
-			mBaseHP = 30;
-			mBaseMP = 15;
+			mBaseHP = 25;
+			mBaseMP = 80;
+			mBasePower = 10;
+			mBaseFirepower = 10;
+			mBaseDefense = 9;
+			mBaseAccuracy = 30;
+			mBaseEvasion = 1;
+			mBaseMagic = 80;
+			mBaseCharm = 45;
+		break;
+		case DRAGON_CLASS: // NEW DWARF
+			mBaseExp = 100;
+			mBaseTP = 20;
+			mBaseHP = 20;
+			mBaseMP = 65;
 			mBasePower = 20;
 			mBaseFirepower = 25;
 			mBaseDefense = 20;
 			mBaseAccuracy = 30;
-			mBaseEvasion = 5;
-			mBaseMagic = 2;
-			mBaseCharm = 5;
-		break;
-		case DARK_ANGEL_CLASS:
-			mBaseExp = 100;
-			mBaseTP = 6;
-			mBaseHP = 15;
-			mBaseMP = 50;
-			mBasePower = 5;
-			mBaseFirepower = 5;
-			mBaseDefense = 15;
-			mBaseAccuracy = 10;
-			mBaseEvasion = 20;
-			mBaseMagic = 40;
-			mBaseCharm = 25;
-		break;
-		case DRAGON_CLASS:
-			mBaseExp = 100;
-			mBaseTP = 6;
-			mBaseHP = 40;
-			mBaseMP = 50;
-			mBasePower = 30;
-			mBaseFirepower = 10;
-			mBaseDefense = 50;
-			mBaseAccuracy = 40;
-			mBaseEvasion = 2;
-			mBaseMagic = 30;
+			mBaseEvasion = 10;
+			mBaseMagic = 60;
 			mBaseCharm = 30;
 		break;
-		case BIG_CAT_CLASS:
+		case BIG_CAT_CLASS: // NEW ARCHER
 			mBaseExp = 100;
-			mBaseTP = 15;
-			mBaseHP = 15;
+			mBaseTP = 25;
+			mBaseHP = 20;
 			mBaseMP = 10;
 			mBasePower = 15;
-			mBaseFirepower = 10;
-			mBaseDefense = 15;
-			mBaseAccuracy = 35;
-			mBaseEvasion = 15;
-			mBaseMagic = 5;
-			mBaseCharm = 10;
+			mBaseFirepower = 45;
+			mBaseDefense = 20;
+			mBaseAccuracy = 70;
+			mBaseEvasion = 55;
+			mBaseMagic = 10;
+			mBaseCharm = 30;
 		break;
 	}
 

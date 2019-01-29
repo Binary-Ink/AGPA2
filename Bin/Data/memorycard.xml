@@ -54,4 +54,31 @@
             <xp>0</xp>
         </character>
     </save>
+    <save>
+        <teamname>STAT TEST</teamname>
+        <character>
+            <name>STAT 1</name>
+            <class>Soldier</class>
+            <level>1</level>
+            <xp>0</xp>
+        </character>
+        <character>
+            <name>STAT 2</name>
+            <class>Dwarf</class>
+            <level>1</level>
+            <xp>0</xp>
+        </character>
+        <character>
+            <name>STAT 3</name>
+            <class>Archer</class>
+            <level>1</level>
+            <xp>0</xp>
+        </character>
+        <character>
+            <name>STAT 4</name>
+            <class>Mage</class>
+            <level>1</level>
+            <xp>0</xp>
+        </character>
+    </save>
 </memorycard>
