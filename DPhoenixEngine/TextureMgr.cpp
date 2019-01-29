@@ -21,7 +21,7 @@ namespace DPhoenix
 		mTextureSRV.clear();
 	}
 
-	//initialise; keep pointer to D3D device
+	//itialise; keep pointer to D3D device
 	void TextureMgr::Init(ID3D11Device* device)
 	{
 		md3dDevice = device;

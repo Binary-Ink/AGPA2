@@ -1,55 +1,55 @@
 <?xml version="1.0" ?>
 <memorycard>
     <save>
-        <teamname>YAYYYYYYYY</teamname>
+        <teamname>CLICK TO EDIT</teamname>
         <character>
             <name>MEMBER 1</name>
-            <class>TOY SOLDIER</class>
-            <level>8</level>
+            <class>Archer</class>
+            <level>1</level>
             <xp>0</xp>
         </character>
         <character>
             <name>MEMBER 2</name>
-            <class>BIG CAT</class>
+            <class>Soldier</class>
             <level>1</level>
             <xp>0</xp>
         </character>
         <character>
             <name>MEMBER 3</name>
-            <class>DRAGON</class>
+            <class>Soldier</class>
             <level>1</level>
             <xp>0</xp>
         </character>
         <character>
             <name>MEMBER 4</name>
-            <class>DARK ANGEL</class>
+            <class>Soldier</class>
             <level>1</level>
             <xp>0</xp>
         </character>
     </save>
     <save>
-        <teamname>TESTTEAM</teamname>
+        <teamname>CLICK TO EDIT</teamname>
         <character>
-            <name>TEST1</name>
-            <class>TOY SOLDIER</class>
+            <name>MEMBER 1</name>
+            <class>Soldier</class>
             <level>1</level>
             <xp>0</xp>
         </character>
         <character>
-            <name>TEST 2</name>
-            <class>DARK ANGEL</class>
+            <name>MEMBER 2</name>
+            <class>Soldier</class>
             <level>1</level>
             <xp>0</xp>
         </character>
         <character>
-            <name>TEST 3</name>
-            <class>DRAGON</class>
+            <name>MEMBER 3</name>
+            <class>Soldier</class>
             <level>1</level>
             <xp>0</xp>
         </character>
         <character>
-            <name>TEST 4</name>
-            <class>TOY SOLDIER</class>
+            <name>MEMBER 4</name>
+            <class>Soldier</class>
             <level>1</level>
             <xp>0</xp>
         </character>

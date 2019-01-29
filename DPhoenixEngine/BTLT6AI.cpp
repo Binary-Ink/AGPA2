@@ -1595,19 +1595,19 @@ void BTLTAIDemo::StartGameFromXML()
 	{
 		DPhoenix::CharacterClasses charClass;
 
-		if (selectedTeam->characters[i]->characterclass == "TOY SOLDIER")
+		if (selectedTeam->characters[i]->characterclass == "Soldier")
 		{
 			charClass = DPhoenix::TOY_SOLDIER_CLASS;
 		}
-		else if (selectedTeam->characters[i]->characterclass == "DARK ANGEL")
+		else if (selectedTeam->characters[i]->characterclass == "Mage")
 		{
 			charClass = DPhoenix::DARK_ANGEL_CLASS;
 		}
-		else if (selectedTeam->characters[i]->characterclass == "DRAGON")
+		else if (selectedTeam->characters[i]->characterclass == "Dwarf")
 		{
 			charClass = DPhoenix::DRAGON_CLASS;
 		}
-		else if (selectedTeam->characters[i]->characterclass == "BIG CAT")
+		else if (selectedTeam->characters[i]->characterclass == "Archer")
 		{
 			charClass = DPhoenix::BIG_CAT_CLASS;
 		}
@@ -1728,16 +1728,16 @@ void BTLTAIDemo::SaveCreateMenu()
 		switch (mCreateMenuTeam->mTeamMembers[i]->mClass)
 		{
 		case DPhoenix::TOY_SOLDIER_CLASS:
-			newTeam->characters[i]->characterclass = "TOY SOLDIER"; 
+			newTeam->characters[i]->characterclass = "Soldier"; 
 			break; 
 		case DPhoenix::DARK_ANGEL_CLASS:
-			newTeam->characters[i]->characterclass = "DARK ANGEL";
+			newTeam->characters[i]->characterclass = "Mage";
 			break;
 		case DPhoenix::DRAGON_CLASS:
-			newTeam->characters[i]->characterclass = "DRAGON";
+			newTeam->characters[i]->characterclass = "Dwarf";
 			break;
 		case DPhoenix::BIG_CAT_CLASS:
-			newTeam->characters[i]->characterclass = "BIG CAT";
+			newTeam->characters[i]->characterclass = "Archer";
 			break;
 		}
 
@@ -2656,17 +2656,64 @@ void BTLTAIDemo::UpdateScene(float dt)
 			opposingTeam = mPlayerTeam;
 		}
 
-		//trigger invert if darkness action being used
+		//trigger invert if magic action being used
 
 		if (currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mTurnState == DPhoenix::CH_ACTIVE_TURNSTATE
 			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mMoveState == DPhoenix::CH_DOAC_MOVESTATE
-			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mSelectedAction == DPhoenix::DARKNESS_ACTION)
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mSelectedAction == 
+			DPhoenix::DARKNESS_ACTION)
 		{
 			mEnableInvert = true; 
 		}
-		else
+		else if (currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mTurnState == DPhoenix::CH_ACTIVE_TURNSTATE
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mMoveState == DPhoenix::CH_DOAC_MOVESTATE
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mSelectedAction ==
+			DPhoenix::ICE_ACTION)
+		{
+			mEnableInvert = true;
+		} else if (currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mTurnState == DPhoenix::CH_ACTIVE_TURNSTATE
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mMoveState == DPhoenix::CH_DOAC_MOVESTATE
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mSelectedAction ==
+			DPhoenix::FIRE_ACTION)
+		{
+			mEnableInvert = true;
+		}else if (currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mTurnState == DPhoenix::CH_ACTIVE_TURNSTATE
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mMoveState == DPhoenix::CH_DOAC_MOVESTATE
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mSelectedAction ==
+			DPhoenix::LIGHTNING_ACTION)
+		{
+			mEnableInvert = true;
+		} else 
+		
 		{
 			mEnableInvert = false; 
+		}
+
+		//trigger cel shading for physical attacks
+		if (currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mTurnState == DPhoenix::CH_ACTIVE_TURNSTATE
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mMoveState == DPhoenix::CH_DOAC_MOVESTATE
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mSelectedAction ==
+			DPhoenix::HIT_ACTION)
+		{
+			mEnableCelShading = true;
+		}
+		else if (currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mTurnState == DPhoenix::CH_ACTIVE_TURNSTATE
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mMoveState == DPhoenix::CH_DOAC_MOVESTATE
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mSelectedAction ==
+			DPhoenix::PISTOL_ACTION)
+		{
+			mEnableCelShading = true;
+		}
+		else if(currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mTurnState == DPhoenix::CH_ACTIVE_TURNSTATE
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mMoveState == DPhoenix::CH_DOAC_MOVESTATE
+			&& currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mSelectedAction ==
+			DPhoenix::SHOTGUN_ACTION)
+		{
+			mEnableCelShading = true;
+		}
+		else
+		{
+			mEnableCelShading = false;
 		}
 
 		if (currentTeam->mTeamMembers[currentTeam->mCurrentMember]->mTurnState == DPhoenix::CH_ACTIVE_TURNSTATE
@@ -2737,7 +2784,7 @@ void BTLTAIDemo::UpdateScene(float dt)
 
 					DPhoenix::GeometryGenerator::MeshData* sphere = new DPhoenix::GeometryGenerator::MeshData();
 
-					mGeoGen->CreateSphere(0.5f, 10.0f, 10.0f, *sphere);
+					mGeoGen->CreateSphere(0.5f, 8.0f, 8.0f, *sphere);
 
 
 					mWeaponMeshes.push_back(new DPhoenix::WeaponMesh(currentTeam->mTeamMembers[currentTeam->mCurrentMember],
@@ -3963,16 +4010,16 @@ void BTLTAIDemo::DrawScene()
 			switch (mPlayerTeam->mTeamMembers[0]->mClass)
 			{
 			case DPhoenix::TOY_SOLDIER_CLASS:
-				classesText << "TOY SOLDIER" << std::endl;
+				classesText << "Soldier" << std::endl;
 				break;
 			case DPhoenix::DARK_ANGEL_CLASS:
-				classesText << "DARK ANGEL" << std::endl;
+				classesText << "Mage" << std::endl;
 				break;
 			case DPhoenix::DRAGON_CLASS:
-				classesText << "DRAGON" << std::endl;
+				classesText << "Dwarf" << std::endl;
 				break;
 			case DPhoenix::BIG_CAT_CLASS:
-				classesText << "BIG CAT" << std::endl;
+				classesText << "Archer" << std::endl;
 				break;
 			}
 		}
@@ -3990,16 +4037,16 @@ void BTLTAIDemo::DrawScene()
 			switch (mPlayerTeam->mTeamMembers[1]->mClass)
 			{
 			case DPhoenix::TOY_SOLDIER_CLASS:
-				classesText << "TOY SOLDIER" << std::endl;
+				classesText << "Soldier" << std::endl;
 				break;
 			case DPhoenix::DARK_ANGEL_CLASS:
-				classesText << "DARK ANGEL" << std::endl;
+				classesText << "Mage" << std::endl;
 				break;
 			case DPhoenix::DRAGON_CLASS:
-				classesText << "DRAGON" << std::endl;
+				classesText << "Dwarf" << std::endl;
 				break;
 			case DPhoenix::BIG_CAT_CLASS:
-				classesText << "BIG CAT" << std::endl;
+				classesText << "Archer" << std::endl;
 				break;
 			}
 		}
@@ -4016,16 +4063,16 @@ void BTLTAIDemo::DrawScene()
 			switch (mPlayerTeam->mTeamMembers[2]->mClass)
 			{
 			case DPhoenix::TOY_SOLDIER_CLASS:
-				classesText << "TOY SOLDIER" << std::endl;
+				classesText << "Soldier" << std::endl;
 				break;
 			case DPhoenix::DARK_ANGEL_CLASS:
-				classesText << "DARK ANGEL" << std::endl;
+				classesText << "Mage" << std::endl;
 				break;
 			case DPhoenix::DRAGON_CLASS:
-				classesText << "DRAGON" << std::endl;
+				classesText << "Dwarf" << std::endl;
 				break;
 			case DPhoenix::BIG_CAT_CLASS:
-				classesText << "BIG CAT" << std::endl;
+				classesText << "Archer" << std::endl;
 				break;
 			}
 		}
@@ -4042,16 +4089,16 @@ void BTLTAIDemo::DrawScene()
 			switch (mPlayerTeam->mTeamMembers[3]->mClass)
 			{
 			case DPhoenix::TOY_SOLDIER_CLASS:
-				classesText << "TOY SOLDIER" << std::endl;
+				classesText << "Soldier" << std::endl;
 				break;
 			case DPhoenix::DARK_ANGEL_CLASS:
-				classesText << "DARK ANGEL" << std::endl;
+				classesText << "Mage" << std::endl;
 				break;
 			case DPhoenix::DRAGON_CLASS:
-				classesText << "DRAGON" << std::endl;
+				classesText << "Dwarf" << std::endl;
 				break;
 			case DPhoenix::BIG_CAT_CLASS:
-				classesText << "BIG CAT" << std::endl;
+				classesText << "Archer" << std::endl;
 				break;
 			}
 		}
@@ -4072,16 +4119,16 @@ void BTLTAIDemo::DrawScene()
 			switch (mEnemyTeam->mTeamMembers[0]->mClass)
 			{
 			case DPhoenix::TOY_SOLDIER_CLASS:
-				classesText << "TOY SOLDIER" << std::endl;
+				classesText << "Soldier" << std::endl;
 				break;
 			case DPhoenix::DARK_ANGEL_CLASS:
-				classesText << "DARK ANGEL" << std::endl;
+				classesText << "Mage" << std::endl;
 				break;
 			case DPhoenix::DRAGON_CLASS:
-				classesText << "DRAGON" << std::endl;
+				classesText << "Dwarf" << std::endl;
 				break;
 			case DPhoenix::BIG_CAT_CLASS:
-				classesText << "BIG CAT" << std::endl;
+				classesText << "Archer" << std::endl;
 				break;
 			}
 		}
@@ -4099,16 +4146,16 @@ void BTLTAIDemo::DrawScene()
 			switch (mEnemyTeam->mTeamMembers[1]->mClass)
 			{
 			case DPhoenix::TOY_SOLDIER_CLASS:
-				classesText << "TOY SOLDIER" << std::endl;
+				classesText << "Soldier" << std::endl;
 				break;
 			case DPhoenix::DARK_ANGEL_CLASS:
-				classesText << "DARK ANGEL" << std::endl;
+				classesText << "Mage" << std::endl;
 				break;
 			case DPhoenix::DRAGON_CLASS:
-				classesText << "DRAGON" << std::endl;
+				classesText << "Dwarf" << std::endl;
 				break;
 			case DPhoenix::BIG_CAT_CLASS:
-				classesText << "BIG CAT" << std::endl;
+				classesText << "Archer" << std::endl;
 				break;
 			}
 		}
@@ -4125,16 +4172,16 @@ void BTLTAIDemo::DrawScene()
 			switch (mEnemyTeam->mTeamMembers[2]->mClass)
 			{
 			case DPhoenix::TOY_SOLDIER_CLASS:
-				classesText << "TOY SOLDIER" << std::endl;
+				classesText << "Soldier" << std::endl;
 				break;
 			case DPhoenix::DARK_ANGEL_CLASS:
-				classesText << "DARK ANGEL" << std::endl;
+				classesText << "Mage" << std::endl;
 				break;
 			case DPhoenix::DRAGON_CLASS:
-				classesText << "DRAGON" << std::endl;
+				classesText << "Dwarf" << std::endl;
 				break;
 			case DPhoenix::BIG_CAT_CLASS:
-				classesText << "BIG CAT" << std::endl;
+				classesText << "Archer" << std::endl;
 				break;
 			}
 		}
@@ -4151,16 +4198,16 @@ void BTLTAIDemo::DrawScene()
 			switch (mEnemyTeam->mTeamMembers[3]->mClass)
 			{
 			case DPhoenix::TOY_SOLDIER_CLASS:
-				classesText << "TOY SOLDIER" << std::endl;
+				classesText << "Soldier" << std::endl;
 				break;
 			case DPhoenix::DARK_ANGEL_CLASS:
-				classesText << "DARK ANGEL" << std::endl;
+				classesText << "Mage" << std::endl;
 				break;
 			case DPhoenix::DRAGON_CLASS:
-				classesText << "DRAGON" << std::endl;
+				classesText << "Dwarf" << std::endl;
 				break;
 			case DPhoenix::BIG_CAT_CLASS:
-				classesText << "BIG CAT" << std::endl;
+				classesText << "Archer" << std::endl;
 				break;
 			}
 		}
@@ -4467,16 +4514,16 @@ void BTLTAIDemo::DrawScene()
 		switch (mCreateMenuTeam->mTeamMembers[0]->mClass)
 		{
 		case DPhoenix::TOY_SOLDIER_CLASS:
-			member1ClassText << "TOY SOLDIER" << std::endl;
+			member1ClassText << "Soldier" << std::endl;
 			break;
 		case DPhoenix::DARK_ANGEL_CLASS:
-			member1ClassText << "DARK ANGEL" << std::endl;
+			member1ClassText << "Mage" << std::endl;
 			break;
 		case DPhoenix::DRAGON_CLASS:
-			member1ClassText << "DRAGON" << std::endl;
+			member1ClassText << "Dwarf" << std::endl;
 			break;
 		case DPhoenix::BIG_CAT_CLASS:
-			member1ClassText << "BIG CAT" << std::endl;
+			member1ClassText << "Archer" << std::endl;
 			break;
 		}
 
@@ -4502,16 +4549,16 @@ void BTLTAIDemo::DrawScene()
 		switch (mCreateMenuTeam->mTeamMembers[1]->mClass)
 		{
 		case DPhoenix::TOY_SOLDIER_CLASS:
-			member2ClassText << "TOY SOLDIER" << std::endl;
+			member2ClassText << "Soldier" << std::endl;
 			break;
 		case DPhoenix::DARK_ANGEL_CLASS:
-			member2ClassText << "DARK ANGEL" << std::endl;
+			member2ClassText << "Mage" << std::endl;
 			break;
 		case DPhoenix::DRAGON_CLASS:
-			member2ClassText << "DRAGON" << std::endl;
+			member2ClassText << "Dwarf" << std::endl;
 			break;
 		case DPhoenix::BIG_CAT_CLASS:
-			member2ClassText << "BIG CAT" << std::endl;
+			member2ClassText << "Archer" << std::endl;
 			break;
 		}
 
@@ -4538,16 +4585,16 @@ void BTLTAIDemo::DrawScene()
 		switch (mCreateMenuTeam->mTeamMembers[2]->mClass)
 		{
 		case DPhoenix::TOY_SOLDIER_CLASS:
-			member3ClassText << "TOY SOLDIER" << std::endl;
+			member3ClassText << "Soldier" << std::endl;
 			break;
 		case DPhoenix::DARK_ANGEL_CLASS:
-			member3ClassText << "DARK ANGEL" << std::endl;
+			member3ClassText << "Mage" << std::endl;
 			break;
 		case DPhoenix::DRAGON_CLASS:
-			member3ClassText << "DRAGON" << std::endl;
+			member3ClassText << "Dwarf" << std::endl;
 			break;
 		case DPhoenix::BIG_CAT_CLASS:
-			member3ClassText << "BIG CAT" << std::endl;
+			member3ClassText << "Archer" << std::endl;
 			break;
 		}
 
@@ -4574,16 +4621,16 @@ void BTLTAIDemo::DrawScene()
 		switch (mCreateMenuTeam->mTeamMembers[3]->mClass)
 		{
 		case DPhoenix::TOY_SOLDIER_CLASS:
-			member4ClassText << "TOY SOLDIER" << std::endl;
+			member4ClassText << "Soldier" << std::endl;
 			break;
 		case DPhoenix::DARK_ANGEL_CLASS:
-			member4ClassText << "DARK ANGEL" << std::endl;
+			member4ClassText << "Mage" << std::endl;
 			break;
 		case DPhoenix::DRAGON_CLASS:
-			member4ClassText << "DRAGON" << std::endl;
+			member4ClassText << "Dwarf" << std::endl;
 			break;
 		case DPhoenix::BIG_CAT_CLASS:
-			member4ClassText << "BIG CAT" << std::endl;
+			member4ClassText << "Archer" << std::endl;
 			break;
 		}
 
@@ -4629,16 +4676,16 @@ void BTLTAIDemo::DrawScene()
 		switch (mCreateMenuTeam->mTeamMembers[mCreateMemberID]->mClass)
 		{
 		case DPhoenix::TOY_SOLDIER_CLASS:
-			memberEditClassText << "TOY SOLDIER" << std::endl;
+			memberEditClassText << "Soldier" << std::endl;
 			break;
 		case DPhoenix::DARK_ANGEL_CLASS:
-			memberEditClassText << "DARK ANGEL" << std::endl;
+			memberEditClassText << "Mage" << std::endl;
 			break;
 		case DPhoenix::DRAGON_CLASS:
-			memberEditClassText << "DRAGON" << std::endl;
+			memberEditClassText << "Dwarf" << std::endl;
 			break;
 		case DPhoenix::BIG_CAT_CLASS:
-			memberEditClassText << "BIG CAT" << std::endl;
+			memberEditClassText << "Archer" << std::endl;
 			break;
 		}
 
@@ -6066,7 +6113,7 @@ void BTLTAIDemo::RenderSkinnedModelNormal(DPhoenix::SkinnedModelInstance * model
 	}
 }
 
-	void BTLTAIDemo::RenderLitTexNormWater(DPhoenix::Waves * model,
+void BTLTAIDemo::RenderLitTexNormWater(DPhoenix::Waves * model,
 		ID3DX11EffectTechnique * tech)
 	{
 		//create view/projection matrix
@@ -6082,14 +6129,14 @@ void BTLTAIDemo::RenderSkinnedModelNormal(DPhoenix::SkinnedModelInstance * model
 			world
 		);
 
-		XMMATRIX worldviewProj = XMMatrixMultiply(world, viewProj); 
-		DPhoenix::Effects::LitTexNormalFX->SetWorldViewProj(worldviewProj); 
+		XMMATRIX worldViewProj = XMMatrixMultiply(world, viewProj); 
+		DPhoenix::Effects::LitTexNormalFX->SetWorldViewProj(worldViewProj);
 
 		//inverse transpose is applied to normals so 0 out translation row so that it doesn't get 
 		//into the inverse transpose calc
 		
 		XMMATRIX A = world; 
-		A.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f); 
+		A.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f); 
 
 		XMVECTOR det = XMMatrixDeterminant(A); 
 

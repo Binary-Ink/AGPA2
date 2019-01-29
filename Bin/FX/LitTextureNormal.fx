@@ -78,7 +78,7 @@ TextureCube gReflectCubeMap;
 SamplerState samAnisotropic
 {
 	Filter = ANISOTROPIC; 
-	MaxAnisotropy =4; 
+	MaxAnisotropy = 4; 
 	
 	AddressU = WRAP; 
 	AddressV = WRAP; 
@@ -246,8 +246,8 @@ float4 PS(VertexOut pin) : SV_TARGET
 		float3 incident = -toEye; 
 		
 		//this is fresnel calculation for reflection
-		float reflectionFactor = gFresnelBias + gFresnelScale 
-			* pow((1.0f + dot(incident, pin.NormalW)), gFresnelPower); 
+		float reflectionFactor = gFresnelBias + 
+			gFresnelScale * pow((1.0f + dot(incident, pin.NormalW)), gFresnelPower); 
 			
 		float3 reflectionVector = reflect(incident, pin.NormalW); 
 		float4 reflectedColor = gReflectCubeMap.Sample(samAnisotropic, reflectionVector);
@@ -267,7 +267,7 @@ float4 PS(VertexOut pin) : SV_TARGET
 		
 		//and blend with surface texture for lerp amount given 
 		texColor = lerp(fresnelColor, texColor, gWaterTexLerp); 
-		}
+	}
 		
 		
 		

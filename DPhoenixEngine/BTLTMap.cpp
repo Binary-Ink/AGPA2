@@ -265,10 +265,6 @@ XMFLOAT3 DPhoenix::BTLTMap::GetPositionAboveFromMapRef(int col, int row)
 		mTiles[col][row]->mMapBlockType == BEACON_MAPBLOCK ||
 		mTiles[col][row]->mMapBlockType == WATER_MAPBLOCK)
 		position.y = 10.5f; 
-	
-	if (mTiles[col][row]->mMapBlockType == FLOOR_MAPBLOCK ||
-		mTiles[col][row]->mMapBlockType == BEACON_MAPBLOCK)
-		position.y = 10.5f;
 
 	if (mTiles[col][row]->mMapBlockType == COVER_MAPBLOCK)
 		position.y = 20.5f;
